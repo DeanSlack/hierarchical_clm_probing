@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader, Dataset
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from utilities import PadSequence
 
+#TODO rename file to elmo_sst.py
 
 def get_args():
     """get input arguments"""
@@ -40,6 +41,7 @@ def train(train_loader, model, criterion, optimizer, embedder):
         num_samples += len(sentences)
 
         sentences = embedder(sentences.cuda())['elmo_representations'][0]
+        print(sentences)
         sentences = pack_padded_sequence(sentences, lengths, batch_first=True).cuda()
         # [batch_size, seq_length, embed_size] cuda
 
