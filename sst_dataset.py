@@ -39,7 +39,8 @@ class SST(Dataset):
                 else:
                     i['text'] = i['text']
                 if self.embedder:
-                    i['text'] = self.embedder(batch_to_ids(i['text']).cuda())['elmo_representations'][0][0]
+                    i['text'] = self.embedder(
+                        batch_to_ids(i['text']).cuda())['elmo_representations'][0][0]
 
         else:
             del_list = []
