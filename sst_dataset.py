@@ -35,7 +35,7 @@ class SST(Dataset):
             for i in self.data:
                 i['label'] = label_to_id[i['label']]
                 if split == True:
-                    i['text'] = [i['text'].split()]
+                    i['text'] = i['text'].split()
                 else:
                     i['text'] = i['text']
                 if self.embedder:
@@ -48,7 +48,7 @@ class SST(Dataset):
             for i in self.data:
                 if len(i['text'].split()) > 3:
                     label = label_to_id[i['label']]
-                    text = [i['text'].split()]
+                    text = i['text'].split()
                     if self.embedder:
                         text = self.embedder(batch_to_ids(text).cuda())['elmo_representations'][0][0]
 

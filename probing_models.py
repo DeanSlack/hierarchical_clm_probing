@@ -12,6 +12,6 @@ class LinearSST(nn.Module):
 
     def forward(self, embedding):
         label_space = self.linear(embedding)
-        label_scores = F.log_softmax(label_space)
+        label_scores = F.log_softmax(label_space, dim=0)
 
         return label_scores
