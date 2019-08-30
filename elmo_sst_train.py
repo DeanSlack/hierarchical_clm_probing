@@ -188,15 +188,16 @@ def main():
     else:
         embedder = ElmoEmbedder(options_file=options, weight_file=weights, cuda_device=0)
 
-
+    # set tokenizer to process dataset with
+    tokenizer = 'moses'
     # Load SST datasets into memory
     print("Processing datasets..")
-    train_data = SST(mode='train', subtrees=False, granularity=granularity,
-                     tokenizer='moses')
+    train_data = SST(mode='train', subtrees=True, granularity=granularity,
+                     tokenizer=tokenizer)
     val_data = SST(mode='val', subtrees=False, granularity=granularity,
-                   tokenizer='moses')
-    test_data = SST(mode='test', subtrees=False, granularity=granularity,
-                    tokenizer='moses')
+                   tokenizer=tokenizer)
+    test_data = SST(mode='test', subtrees=True, granularity=granularity,
+                    tokenizer=tokenizer)
     # Printout dataset stats
     print(f"Training samples: {len(train_data)}")
     print(f"Validation samples: {len(val_data)}")

@@ -6,6 +6,7 @@ Results collected from a simple linear probe layer trained on top of frozen cont
 ## **To-do List**
 
 - Tabulate POS results
+- Add scalar mix results
 - Perform Binary Sentiment Classification
 - Implement early stopping with patience
 - Experiment will full treebank phrases for training for additional results
@@ -19,75 +20,51 @@ Results collected from a simple linear probe layer trained on top of frozen cont
 
 Results for linear probing tasks for all pretrained representations used in the study. All linear models are trained ontop of frozen contextualizers for 60 epochs using the Adam optimizer with a learning rate of 0.0001. Results from the epoch with the best accuracy are used.
 
-## **Sentiment Analysis**
+## Pretrained Contextualizers
+
+The following pretrained contextualizer models are used in this work.
+
+**BERT (base, cased)**: 12-layer, 768-hidden, 12-heads, 110M parameters.
+Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words))
+
+**ELMo (original)**: 2-layer (+ non-contextual embedding layer), 1024-representation, 93.6M parameters. Trained on cased English text: Google 1 Billion words (~800M tokens)
+
+**ELMo (5.5B)**: 2-layer (+ non-contextual embedding layer), 1024-representation, 93.6M parameters. Trained on cased English text: 5.5B tokens consisting of Wikipedia (1.9B) and all of the monolingual news crawl data from WMT 2008-2012 (3.6B)
+
+## Non-contextualised benchmark
+
+**GLoVe (840B.300d)**: (GLoVe description)
+
+## **Sentiment Analysis (root sentences)**
 
 We perform sentence-level sentiment analysis using single word representations contextualised on full sentences. We experiment with both fine-grained (5 classes) and binary, using the Stanford Sentiment Treebank (SST).
 
-### **BERT (base, cased) SST-5 (root sentences)**
-
-12-layer, 768-hidden, 12-heads, 110M parameters.
-Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words))
-
-| Layer     | SST-5    | SST-2                |
-|:---------:|:---------|:--------------------:|
-|12         | 39.180   |
-|11         | 37.628   |
-|10         | 36.734   |
-|9          | 35.364   |
-|8          | 35.793   |
-|7          | 34.464   |
-|6          | 33.716   |
-|5          | 31.384*  |
-|4          | 31.984*  |
-|3          | 31.465*  |
-|2          | 31.407*  |
-|1          | 31.253*  |
-|0          | 24.145*  |
-
+| Contextualizer              | SST-5    | SST-2    |
+|:--------------------------- |:---------|:--------:|
+|BERT (base, cased), layer 12 | 39.180   | 74.011
+|BERT (base, cased), layer 11 | 37.628   | 72.173
+|BERT (base, cased), layer 10 | 36.734   | 70.489
+|BERT (base, cased), layer 9  | 35.364   | 70.025
+|BERT (base, cased), layer 8  | 35.793   |
+|BERT (base, cased), layer 7  | 34.464   |
+|BERT (base, cased), layer 6  | 33.716   |
+|BERT (base, cased), layer 5  | 31.384*  |
+|BERT (base, cased), layer 4  | 31.984*  |
+|BERT (base, cased), layer 3  | 31.465*  |
+|BERT (base, cased), layer 2  | 31.407*  |
+|BERT (base, cased), layer 1  | 31.253*  |
+|BERT (base, cased), layer 0  | 24.145*  |
+|||
+|ELMo (original), layer 2     | 39.461   |
+|ELMo (original), layer 1     | 38.206   |
+|ELMo (original), layer 0     | 29.097   |
+|||
+|ELMo (5.5B), layer 2         | 40.151   | 77.013
+|ELMo (5.5B), layer 1         | 38.701   | 75.042
+|ELMo (5.5B), layer 0         | 29.052   | 57.197
+|||
+| GLoVe *840B.300d)           | 28.808   | 57.721  |
 *retest
-
-### **ELMo (original) SST-5 (root sentences)**
-
-2-layer (+ non-contextual embedding layer), 1024-representation, 93.6M parameters.
-Trained on cased English text: Google 1 Billion words (~800M tokens)
-
-| Layer     | SST-5                | SST-2                |
-|:---------:|:--------------------:|:--------------------:|
-|2          | 39.461               |                      |
-|1          | 38.206               |                      |
-|0          | 29.097               |                      |
-
-### **ELMo (5.5B) SST-5 (root sentences)**
-
-2-layer (+ non-contextual embedding layer), 1024-representation, 93.6M parameters.
-Trained on cased English text: 5.5B tokens consisting of Wikipedia (1.9B) and all of the monolingual news crawl data from WMT 2008-2012 (3.6B)
-
-| Layer     | SST-5     | SST-2                |
-|:---------:|:---------:|:--------------------:|
-|2          | 40.151    | 77.013
-|1          | 38.701    | 75.042
-|0          | 29.052    | 57.197
-
-### **ELMo (4-layer) SST-5 (root sentences)**
-
-4-layer (+ non-contextual embedding layer), 1024-representation, 93.6M parameters.
-Trained on cased English text: Google 1 Billion words (~800M tokens)
-
-| Layer     | SST-5     | SST-2                |
-|:---------:|:---------:|:--------------------:|
-|4          |
-|3          |
-|2          |
-|1          |
-|0          |
-
-### **GLoVe (840B.300d) SST-5 (root sentences)**
-
-GLoVe description.
-
-|           | SST-5                | SST-2                |
-|:---------:|:--------------------:|:--------------------:|
-| GLoVe     | 28.808               | 57.721               |
 
 ## **Part of Speech**
 

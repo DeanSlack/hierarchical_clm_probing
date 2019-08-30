@@ -16,13 +16,13 @@ def get_args():
     """get input arguments"""
     parser = argparse.ArgumentParser(description="train")
 
-    parser.add_argument('--model', default='', type=str)
+    parser.add_argument('--config', default='base_cased', type=str)
     parser.add_argument('--epochs', default=60, type=int)
     parser.add_argument('--batch_size', default=16, type=int)
     parser.add_argument('--resume', default='', type=str)
     parser.add_argument('--save', default=False, type=bool)
     parser.add_argument('--lr', default=0.0001, type=float)
-    parser.add_argument('--fine_grained', default=True, type=bool)
+    parser.add_argument('--granularity', default=True, type=int)
     parser.add_argument('--layer', default='1', type=int)
 
     return parser.parse_args()
@@ -40,7 +40,7 @@ class BertCollate:
         return sentences, labels, lengths
 
 
-def train(train_loader, model, criterion, optimizer, embedder, layer):
+def train(train_loader, model, criterion, optimizer, embedder, layer, granularity):
     running_loss = 0
     running_acc = 0
     iteration_count = 0
@@ -53,7 +53,12 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
         sentences = torch.LongTensor(sentences).cuda()
 
         with torch.no_grad():
-            sentences = embedder(sentences)[2][layer]
+            # scalar mix of layers
+            if layer == -1:
+                sentences = embedder(sentences)[0]
+            # individual layer extraction
+            else:
+                sentences = embedder(sentences)[2][layer]
 
         # Get activations from individual layers
         word_batch = []
@@ -70,7 +75,7 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
         # zero gradients
         model.zero_grad()
         scores = model(word_batch)
-        scores = scores.view(-1, 5)
+        scores = scores.view(-1, granularity)
         labels = labels.view(-1)
 
         # get accuracy scores
@@ -93,7 +98,7 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
     return loss, accuracy, train_time
 
 
-def test(test_loader, model, criterion, embedder, layer):
+def test(test_loader, model, criterion, embedder, layer, granularity):
     running_loss = 0
     running_acc = 0
     iteration_count = 0
@@ -107,7 +112,12 @@ def test(test_loader, model, criterion, embedder, layer):
             sentences = torch.LongTensor(sentences).cuda()
 
             with torch.no_grad():
-                sentences = embedder(sentences)[0]
+            # scalar mix of layers
+                if layer == -1:
+                    sentences = embedder(sentences)[0]
+                # individual layer extraction
+                else:
+                    sentences = embedder(sentences)[2][layer]
 
             # Get activations from individual layers
             word_batch = []
@@ -122,7 +132,7 @@ def test(test_loader, model, criterion, embedder, layer):
             labels = torch.LongTensor(word_labels).cuda()
 
             scores = model(word_batch)
-            scores = scores.view(-1, 5)
+            scores = scores.view(-1, granularity)
             labels = labels.view(-1)
 
             # get accuracy scores
@@ -145,26 +155,25 @@ def test(test_loader, model, criterion, embedder, layer):
 def main():
     # Collect input arguments & hyperparameters
     args = get_args()
+    config = args.config
     batch_size = args.batch_size
     learn_rate = args.lr
     epochs = args.epochs
-    fine_grained = args.fine_grained
+    save = args.save
+    granularity = args.granularity
     layer = args.layer
     vis = Visualizations()
-
-
-    if fine_grained is True:
-        granularity = 5
-    else:
-        granularity = 2
 
     # set tokenizer to process dataset with
     tokenizer = 'bert'
     # Load SST datasets into memory
     print("Processing datasets..")
-    train_data = SST(mode='train', subtrees=False, tokenizer=tokenizer)
-    val_data = SST(mode='val', subtrees=False, tokenizer=tokenizer)
-    test_data = SST(mode='test', subtrees=False, tokenizer=tokenizer)
+    train_data = SST(mode='train', subtrees=False, granularity=granularity,
+                     tokenizer=tokenizer)
+    val_data = SST(mode='val', subtrees=False, granularity=granularity,
+                   tokenizer=tokenizer)
+    test_data = SST(mode='test', subtrees=False, granularity=granularity,
+                    tokenizer=tokenizer)
     # Printout dataset stats
     print(f"Training samples: {len(train_data)}")
     print(f"Validation samples: {len(val_data)}")
@@ -196,21 +205,23 @@ def main():
     best_acc = 0
     for epoch in range(epochs):
         loss, acc, time = train(train_data, model, criterion, optimizer, embedder,
-                                       layer)
-
+                                layer, granularity)
         val_loss, val_acc, val_time = test(val_data, model, criterion, embedder,
-                                              layer)
+                                           layer, granularity)
         test_loss, test_acc, test_time = test(test_data, model, criterion, embedder,
-                                              layer)
+                                              layer, granularity)
 
-        if test_acc > best_acc and epoch > 0:
+        if test_acc > best_acc:
             best_acc = test_acc
-            # print("Best")
             # printout epoch stats
             print_loss(epoch, 'train', loss, acc, time)
             print_loss(epoch, 'val  ', val_loss, val_acc, val_time)
             print_loss(epoch, 'test ', test_loss, test_acc, test_time)
             print("")
+
+            if save is True:
+                savename = 'models/sst/bert_' + config + '_' + str(layer) + '_sst-' + str(granularity) + '.pt'
+                torch.save(model.state_dict(), savename)
 
         # plot epoch stats
         vis.plot_loss(loss, epoch, 'train')

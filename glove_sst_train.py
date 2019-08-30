@@ -155,8 +155,8 @@ def main():
                      tokenizer=tokenizer)
     val_data = SST(mode='val', subtrees=False, fine_grained=fine_grain,
                    tokenizer=tokenizer)
-    test_data = SST(mode='test', subtrees=False, fine_grained=fine_grain,
-                    tokenizer=tokenizer)
+    test_data = SST(mode='test', subtrees=True, fine_grained=fine_grain,
+                    tokenizer=tokenizer, threshold=0)
 
     # Printout dataset stats
     print(f"Training samples: {len(train_data)}")

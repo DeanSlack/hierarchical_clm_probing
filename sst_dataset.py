@@ -4,7 +4,7 @@ from utilities import Tokenizer
 
 class SST(Dataset):
     def __init__(self, mode='train', subtrees=False, embedder=None, tokenizer=None,
-                 granularity=5, threshold=2):
+                 granularity=2, threshold=3):
 
         if granularity == 5:
             fine_grained = True
@@ -57,7 +57,7 @@ class SST(Dataset):
             data_list = []
             count = 0
             for i in self.data:
-                if len(i['text'].split()) > threshold:
+                if len(i['text'].split()) >= threshold:
                     label = label_to_id[i['label']]
 
                     if tokenizer:
