@@ -43,6 +43,7 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 |2          | 31.407*       |
 |1          | 31.253*       |
 |0          | 24.145*       |
+
 *retest
 
 ### **ELMo (original) SST-5 (root sentences)**
@@ -54,7 +55,7 @@ Trained on cased English text: Google 1 Billion words (~800M tokens)
 |:---------:|:------------:|
 |2          | 39.461       |
 |1          | 38.206       |
-|0          |        |
+|0          | 28.714       |
 
 ### **ELMo (5.5B) SST-5 (root sentences)**
 
