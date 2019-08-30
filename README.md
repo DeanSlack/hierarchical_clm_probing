@@ -40,13 +40,13 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 We perform sentence-level sentiment analysis using single word representations contextualised on full sentences. We experiment with both fine-grained (5 classes) and binary, using the Stanford Sentiment Treebank (SST).
 
 | Contextualizer              | SST-5    | SST-2    |
-|:--------------------------- |:---------|:--------:|
+|:--------------------------- |:--------:|:--------:|
 |BERT (base, cased), layer 12 | 39.180   | 74.011
 |BERT (base, cased), layer 11 | 37.628   | 72.173
 |BERT (base, cased), layer 10 | 36.734   | 70.489
-|BERT (base, cased), layer 9  | 35.364   | 70.025
-|BERT (base, cased), layer 8  | 35.793   |
-|BERT (base, cased), layer 7  | 34.464   |
+|BERT (base, cased), layer 9  | 35.364   | 70.105
+|BERT (base, cased), layer 8  | 35.793   | 68.477
+|BERT (base, cased), layer 7  | 34.464   | 66.924
 |BERT (base, cased), layer 6  | 33.716   |
 |BERT (base, cased), layer 5  | 31.384*  |
 |BERT (base, cased), layer 4  | 31.984*  |
@@ -63,7 +63,7 @@ We perform sentence-level sentiment analysis using single word representations c
 |ELMo (5.5B), layer 1         | 38.701   | 75.042
 |ELMo (5.5B), layer 0         | 29.052   | 57.197
 |||
-| GLoVe *840B.300d)           | 28.808   | 57.721  |
+| GLoVe (840B.300d)           | 28.808   | 57.721  |
 *retest
 
 ## **Part of Speech**
@@ -74,6 +74,6 @@ We perform sentence-level sentiment analysis using single word representations c
 | ELMo      |         |          |             |
 | BERT      |         |          |             |
 
-## Ancestor Sentiment Classification
+## **Ancestor Sentiment Classification**
 
 For a sequence of contextualized word representations, each token is tasked with predicting the sentiment classification of it's parent, grandparent, or great-grandparent. The root sentiment classification (sentence-level) is removed, as this is already tested. For cases where the token doesn't have a grandparent or great-grandparent, the linear model is tasked to predict a "None" classification is label.
