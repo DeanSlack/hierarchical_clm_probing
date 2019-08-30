@@ -19,11 +19,11 @@ def get_args():
     """get input arguments"""
     parser = argparse.ArgumentParser(description="train")
 
-    parser.add_argument('--model', default='original', type=str)
+    parser.add_argument('--config', default='original', type=str)
     parser.add_argument('--epochs', default=60, type=int)
     parser.add_argument('--batch_size', default=16, type=int)
     parser.add_argument('--resume', default='', type=str)
-    parser.add_argument('--save', default=False, type=bool)
+    parser.add_argument('--save', default=True, type=bool)
     parser.add_argument('--lr', default=0.0001, type=float)
     parser.add_argument('--granularity', default=5, type=int)
     parser.add_argument('--layer', default='1', type=int)
@@ -166,7 +166,7 @@ def main():
     # Collect input arguments & hyperparameters
     args = get_args()
     save = args.save
-    model = args.model
+    config = args.config
     batch_size = args.batch_size
     learn_rate = args.lr
     epochs = args.epochs
@@ -175,11 +175,11 @@ def main():
     vis = Visualizations()
 
     # Load pretrained ELMo model from files
-    if model == 'original':
+    if config == 'original':
         options = "elmo/elmo_2x4096_512_2048cnn_2xhighway_options.json"
         weights = "elmo/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
 
-    elif model == 'large':
+    elif config == 'large':
         options = "elmo/elmo_2x4096_512_2048cnn_2xhighway_5.5B_options.json"
         weights = "elmo/elmo_2x4096_512_2048cnn_2xhighway_5.5B_weights.hdf5"
 
@@ -241,7 +241,7 @@ def main():
             print("")
 
             if save is True:
-                savename = 'models/sst/elmo_' + model + '_' + str(layer) + '_sst-' + str(granularity) + '.pt'
+                savename = 'models/sst/elmo_' + config + '_' + str(layer) + '_sst-' + str(granularity) + '.pt'
                 torch.save(model.state_dict(), savename)
 
 

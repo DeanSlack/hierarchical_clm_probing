@@ -8,11 +8,9 @@ Results collected from a simple linear probe layer trained on top of frozen cont
 - Tabulate POS results
 - Perform Binary Sentiment Classification
 - Implement early stopping with patience
-- Experiment will full treebank phrases for training
+- Experiment will full treebank phrases for training for additional results
 - Run all pretrained representations on non-linear classifier to determine the performance being constrained by using linear models.
 - Check for other papers looking at sentence level sentiment prediction using single word representations
-- Change tokenization into function that can be called from dataset, s.t. pass 'moses' tokenize argument and it will call the moses tokenize method
-- Changing ELMo model to 5.5b would provide a closer comparison to BERT pretraining data
 - Check oslo sentiment paper for dataset containing different linguist phenomena
 - Qualitative assessment for correct classifications which override/negate the ground sentiment of the word with no context.
 
@@ -67,8 +65,8 @@ Trained on cased English text: 5.5B tokens consisting of Wikipedia (1.9B) and al
 | Layer     | SST-5     | SST-2                |
 |:---------:|:---------:|:--------------------:|
 |2          | 40.151    | 77.013
-|1          | 38.701    |
-|0          | 29.052    |
+|1          | 38.701    | 75.042
+|0          | 29.052    | 57.197
 
 ### **ELMo (4-layer) SST-5 (root sentences)**
 
@@ -90,3 +88,15 @@ GLoVe description.
 |           | SST-5                | SST-2                |
 |:---------:|:--------------------:|:--------------------:|
 | GLoVe     | 28.808               | 57.721               |
+
+## **Part of Speech**
+
+| Model     | PTB     | Parent   | Grandparent |
+|:---------:|:-------:|:--------:|:-----------:|
+| GLoVe     |         |          |             |
+| ELMo      |         |          |             |
+| BERT      |         |          |             |
+
+## Ancestor Sentiment Classification
+
+For a sequence of contextualized word representations, each token is tasked with predicting the sentiment classification of it's parent, grandparent, or great-grandparent. The root sentiment classification (sentence-level) is removed, as this is already tested. For cases where the token doesn't have a grandparent or great-grandparent, the linear model is tasked to predict a "None" classification is label.
