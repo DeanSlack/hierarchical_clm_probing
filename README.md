@@ -6,7 +6,6 @@ Results collected from a simple linear probe layer trained on top of frozen cont
 ## **To-do List**
 
 - Tabulate POS results
-- Run non-contextual GLoVe word embedding base
 - Perform Binary Sentiment Classification
 - Implement early stopping with patience
 - Experiment will full treebank phrases for training
@@ -15,6 +14,7 @@ Results collected from a simple linear probe layer trained on top of frozen cont
 - Change tokenization into function that can be called from dataset, s.t. pass 'moses' tokenize argument and it will call the moses tokenize method
 - Changing ELMo model to 5.5b would provide a closer comparison to BERT pretraining data
 - Check oslo sentiment paper for dataset containing different linguist phenomena
+- Qualitative assessment for correct classifications which override/negate the ground sentiment of the word with no context.
 
 
 ## **Linear Probing Results**
