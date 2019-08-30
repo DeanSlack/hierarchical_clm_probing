@@ -208,19 +208,14 @@ def main():
             # print("Best")
             # printout epoch stats
             print_loss(epoch, 'train', loss, acc, time)
-            print_loss(epoch, 'val ', val_loss, val_acc, val_time)
+            print_loss(epoch, 'val  ', val_loss, val_acc, val_time)
             print_loss(epoch, 'test ', test_loss, test_acc, test_time)
+            print("")
 
         # plot epoch stats
         vis.plot_loss(loss, epoch, 'train')
         vis.plot_loss(val_loss, epoch, 'val')
         vis.plot_loss(test_loss, epoch, 'test')
-
-        # # printout epoch stats
-        # print_loss(epoch, 'train', loss, acc, time)
-        # print_loss(epoch, 'test ', test_loss, test_acc, test_time)
-        # print("")
-
 
 
 if __name__ == '__main__':

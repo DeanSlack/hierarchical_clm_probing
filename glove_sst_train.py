@@ -22,23 +22,25 @@ def get_args():
     parser.add_argument('--resume', default='', type=str)
     parser.add_argument('--save', default=False, type=bool)
     parser.add_argument('--lr', default=0.0001, type=float)
-    parser.add_argument('--fine_grained', default=True, type=bool)
+    parser.add_argument('--granularity', default=True, type=bool)
     parser.add_argument('--layer', default='1', type=int)
 
     return parser.parse_args()
 
 
 class GLoVeCollate:
+    def __init__(self):
+        self.vectors = GloVe()
     def __call__(self, batch):
         # each element in "batch" is a dict {text:, label:}
         lengths = [len(x['text']) for x in batch]
-        sentences = [GloVe(x['text']) for x in batch]
+        sentences = [self.vectors[x['text']] for x in batch]
         labels = [x['label'] for x in batch]
 
         return sentences, labels, lengths
 
 
-def train(train_loader, model, criterion, optimizer, embedder, layer):
+def train(train_loader, model, criterion, optimizer, embedder, layer, granularity):
     running_loss = 0
     running_acc = 0
     iteration_count = 0
@@ -48,8 +50,6 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
 
     for idx, sample in enumerate(train_loader):
         sentences, labels, lengths = sample
-        sentences = torch.LongTensor(sentences).cuda()
-
         # Get activations per word
         word_batch = []
         word_labels = []
@@ -61,11 +61,10 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
         num_samples += len(word_labels)
         word_batch = torch.stack(word_batch, dim=0).cuda()
         labels = torch.LongTensor(word_labels).cuda()
-
         # zero gradients
         model.zero_grad()
         scores = model(word_batch)
-        scores = scores.view(-1, 5)
+        scores = scores.view(-1, granularity)
         labels = labels.view(-1)
 
         # get accuracy scores
@@ -88,7 +87,7 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
     return loss, accuracy, train_time
 
 
-def test(test_loader, model, criterion, embedder, layer):
+def test(test_loader, model, criterion, embedder, layer, granularity):
     running_loss = 0
     running_acc = 0
     iteration_count = 0
@@ -99,7 +98,6 @@ def test(test_loader, model, criterion, embedder, layer):
     with torch.no_grad():
         for idx, sample in enumerate(test_loader):
             sentences, labels, lengths = sample
-            sentences = torch.LongTensor(sentences).cuda()
 
             # Get activations per word
             word_batch = []
@@ -114,7 +112,7 @@ def test(test_loader, model, criterion, embedder, layer):
             labels = torch.LongTensor(word_labels).cuda()
 
             scores = model(word_batch)
-            scores = scores.view(-1, 5)
+            scores = scores.view(-1, granularity)
             labels = labels.view(-1)
 
             # get accuracy scores
@@ -140,11 +138,11 @@ def main():
     batch_size = args.batch_size
     learn_rate = args.lr
     epochs = args.epochs
-    fine_grained = args.fine_grained
+    fine_grain = False
     layer = args.layer
     vis = Visualizations()
 
-    if fine_grained is True:
+    if fine_grain is True:
         granularity = 5
     else:
         granularity = 2
@@ -153,9 +151,13 @@ def main():
     tokenizer = 'moses'
     # Load SST datasets into memory
     print("Processing datasets..")
-    train_data = SST(mode='train', subtrees=False, tokenizer=tokenizer)
-    val_data = SST(mode='val', subtrees=False, tokenizer=tokenizer)
-    test_data = SST(mode='test', subtrees=False, tokenizer=tokenizer)
+    train_data = SST(mode='train', subtrees=False, fine_grained=fine_grain,
+                     tokenizer=tokenizer)
+    val_data = SST(mode='val', subtrees=False, fine_grained=fine_grain,
+                   tokenizer=tokenizer)
+    test_data = SST(mode='test', subtrees=False, fine_grained=fine_grain,
+                    tokenizer=tokenizer)
+
     # Printout dataset stats
     print(f"Training samples: {len(train_data)}")
     print(f"Validation samples: {len(val_data)}")
@@ -174,7 +176,7 @@ def main():
     embedder = None
 
     # initialize probing model
-    model = LinearSST(embedding_dim=768, granularity=granularity)
+    model = LinearSST(embedding_dim=300, granularity=granularity)
     model = model.cuda()
 
     # set loss function and optimizer
@@ -185,30 +187,26 @@ def main():
     best_acc = 0
     for epoch in range(epochs):
         loss, acc, time = train(train_data, model, criterion, optimizer, embedder,
-                                       layer)
+                                       layer, granularity)
 
         val_loss, val_acc, val_time = test(val_data, model, criterion, embedder,
-                                              layer)
+                                              layer, granularity)
         test_loss, test_acc, test_time = test(test_data, model, criterion, embedder,
-                                              layer)
+                                              layer, granularity)
 
-        if test_acc > best_acc and epoch > 0:
+        if test_acc > best_acc:
             best_acc = test_acc
             # print("Best")
             # printout epoch stats
             print_loss(epoch, 'train', loss, acc, time)
-            print_loss(epoch, 'val ', val_loss, val_acc, val_time)
+            print_loss(epoch, 'val  ', val_loss, val_acc, val_time)
             print_loss(epoch, 'test ', test_loss, test_acc, test_time)
+            print("")
 
         # plot epoch stats
         vis.plot_loss(loss, epoch, 'train')
         vis.plot_loss(val_loss, epoch, 'val')
         vis.plot_loss(test_loss, epoch, 'test')
-
-        # # printout epoch stats
-        # print_loss(epoch, 'train', loss, acc, time)
-        # print_loss(epoch, 'test ', test_loss, test_acc, test_time)
-        # print("")
 
 
 

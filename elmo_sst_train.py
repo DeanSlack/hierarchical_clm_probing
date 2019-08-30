@@ -25,7 +25,7 @@ def get_args():
     parser.add_argument('--resume', default='', type=str)
     parser.add_argument('--save', default=False, type=bool)
     parser.add_argument('--lr', default=0.0001, type=float)
-    parser.add_argument('--fine_grained', default=True, type=bool)
+    parser.add_argument('--granularity', default=5, type=int)
     parser.add_argument('--layer', default='1', type=int)
 
     return parser.parse_args()
@@ -41,7 +41,7 @@ class ElmoCollate:
         return sentences, labels, lengths
 
 
-def train(train_loader, model, criterion, optimizer, embedder, layer):
+def train(train_loader, model, criterion, optimizer, embedder, layer, granularity):
     running_loss = 0
     running_acc = 0
     iteration_count = 0
@@ -82,7 +82,7 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
         # zero gradients
         model.zero_grad()
         scores = model(word_batch)
-        scores = scores.view(-1, 5)
+        scores = scores.view(-1, granularity)
         labels = labels.view(-1)
         # get accuracy scores
         for idx, i in enumerate(scores):
@@ -103,7 +103,7 @@ def train(train_loader, model, criterion, optimizer, embedder, layer):
     return running_loss / iteration_count, accuracy, train_time
 
 
-def test(test_loader, model, criterion, embedder, layer):
+def test(test_loader, model, criterion, embedder, layer, granularity):
     running_loss = 0
     running_acc = 0
     iteration_count = 0
@@ -142,9 +142,8 @@ def test(test_loader, model, criterion, embedder, layer):
 
             word_batch = torch.stack(word_batch, dim=0)
             labels = torch.LongTensor(word_labels).cuda()
-
             scores = model(word_batch)
-            scores = scores.view(-1, 5)
+            scores = scores.view(-1, granularity)
             labels = labels.view(-1)
 
             # get accuracy scores
@@ -171,15 +170,9 @@ def main():
     batch_size = args.batch_size
     learn_rate = args.lr
     epochs = args.epochs
-    fine_grained = args.fine_grained
+    granularity = args.granularity
     layer = args.layer
     vis = Visualizations()
-
-
-    if fine_grained is True:
-        granularity = 5
-    else:
-        granularity = 2
 
     # Load pretrained ELMo model from files
     if model == 'original':
@@ -187,8 +180,8 @@ def main():
         weights = "elmo/elmo_2x4096_512_2048cnn_2xhighway_weights.hdf5"
 
     elif model == 'large':
-        options = "elmo_2x4096_512_2048cnn_2xhighway_5.5B_options.json"
-        weights = "elmo_2x4096_512_2048cnn_2xhighway_5.5B_weights.hdf5"
+        options = "elmo/elmo_2x4096_512_2048cnn_2xhighway_5.5B_options.json"
+        weights = "elmo/elmo_2x4096_512_2048cnn_2xhighway_5.5B_weights.hdf5"
 
     if layer == -1:
         embedder = Elmo(options, weights, 1, dropout=0).cuda()
@@ -198,9 +191,12 @@ def main():
 
     # Load SST datasets into memory
     print("Processing datasets..")
-    train_data = SST(mode='train', subtrees=False, tokenizer='moses')
-    val_data = SST(mode='val', subtrees=False, tokenizer='moses')
-    test_data = SST(mode='test', subtrees=False, tokenizer='moses')
+    train_data = SST(mode='train', subtrees=False, granularity=granularity,
+                     tokenizer='moses')
+    val_data = SST(mode='val', subtrees=False, granularity=granularity,
+                   tokenizer='moses')
+    test_data = SST(mode='test', subtrees=False, granularity=granularity,
+                    tokenizer='moses')
     # Printout dataset stats
     print(f"Training samples: {len(train_data)}")
     print(f"Validation samples: {len(val_data)}")
@@ -224,10 +220,12 @@ def main():
     # track best test accuracy for model
     best_acc = 0
     for epoch in range(epochs):
-        loss, acc, time = train(train_data, model, criterion, optimizer, embedder, layer)
-        val_loss, val_acc, val_time = test(val_data, model, criterion, embedder, layer,)
+        loss, acc, time = train(train_data, model, criterion, optimizer, embedder,
+                                layer, granularity)
+        val_loss, val_acc, val_time = test(val_data, model, criterion, embedder,
+                                           layer, granularity)
         test_loss, test_acc, test_time = test(test_data, model, criterion, embedder,
-                                              layer)
+                                              layer, granularity)
 
         # plot epoch stats
         vis.plot_loss(loss, epoch, 'train')
@@ -238,9 +236,13 @@ def main():
             best_acc = test_acc
             # printout epoch stats
             print_loss(epoch, 'train', loss, acc, time)
-            print_loss(epoch, 'val ', val_loss, val_acc, val_time)
+            print_loss(epoch, 'val  ', val_loss, val_acc, val_time)
             print_loss(epoch, 'test ', test_loss, test_acc, test_time)
             print("")
+
+            if save is True:
+                savename = 'models/sst/elmo_' + model + '_' + str(layer) + '_sst-' + str(granularity) + '.pt'
+                torch.save(model.state_dict(), savename)
 
 
 if __name__ == '__main__':
