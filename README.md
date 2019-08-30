@@ -33,7 +33,7 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 
 ## Non-contextualised benchmark
 
-**GLoVe (840B.300d)**: (GLoVe description)
+**GloVe (840B.300d)**: (GloVe description)
 
 ## **Sentiment Analysis (root sentences)**
 
@@ -63,7 +63,7 @@ We perform sentence-level sentiment analysis using single word representations c
 |ELMo (5.5B), layer 1         | 38.701   | 75.042
 |ELMo (5.5B), layer 0         | 29.052   | 57.197
 |||
-| GLoVe (840B.300d)           | 28.808   | 57.721  |
+| GloVe (840B.300d)           | 28.808   | 57.721  |
 *retest
 
 ## **Part of Speech**
