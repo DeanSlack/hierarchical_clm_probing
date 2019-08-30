@@ -56,8 +56,6 @@ Trained on cased English text: Google 1 Billion words (~800M tokens)
 |1          | 38.206       |
 |0          |        |
 
-![Loss Curves ELMo SST5](/figures/elmo_sst5_loss.png){:height="50%" width="50%"}
-
 ### **ELMo (5.5B) SST-5 (root sentences)**
 
 2-layer (+ embedding layer), 1024-representation, 93.6M parameters.
