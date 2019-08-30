@@ -1,14 +1,13 @@
-from allennlp.modules.elmo import batch_to_ids
 from torchnlp.datasets import smt_dataset
-from torch.utils.data import DataLoader, Dataset
-
+from torch.utils.data import Dataset
+from utilities import Tokenizer
 
 class SST(Dataset):
-    def __init__(self, mode='train', subtrees=False, embedder=None, split=True):
+    def __init__(self, mode='train', subtrees=False, embedder=None, tokenizer=None,
+                 threshold=0):
 
-        self.embedder = embedder
-        if self.embedder:
-            self.embedder = self.embedder.cuda()
+        if tokenizer:
+            self.tokenizer = Tokenizer(tokenizer)
 
         self.subtrees = subtrees
 
@@ -34,29 +33,29 @@ class SST(Dataset):
         if self.subtrees == False:
             for i in self.data:
                 i['label'] = label_to_id[i['label']]
-                if split == True:
-                    i['text'] = i['text'].split()
-                else:
-                    i['text'] = i['text']
-                if self.embedder:
-                    i['text'] = self.embedder(
-                        batch_to_ids(i['text']).cuda())['elmo_representations'][0][0]
+
+                if tokenizer:
+                    i['text'] = self.tokenizer.tokenize(i['text'])
 
         else:
-            del_list = []
+            data_list = []
             count = 0
             for i in self.data:
-                if len(i['text'].split()) > 3:
+                if len(i['text'].split()) > threshold:
                     label = label_to_id[i['label']]
-                    text = i['text'].split()
-                    if self.embedder:
-                        text = self.embedder(batch_to_ids(text).cuda())['elmo_representations'][0][0]
 
-                    del_list.append({'text': text, 'label': label})
+                    if tokenizer:
+                        text = self.tokenizer.tokenize(i['text'])
+
+                    else:
+                        text = i['text']
+
+                    data_list.append({'text': text, 'label': label})
                     count += 1
-            self.data = del_list
 
-        del self.embedder
+            self.data = data_list
+            del data_list
+
 
     def __len__(self):
         return len(self.data)

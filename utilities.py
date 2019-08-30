@@ -2,6 +2,9 @@ import visdom
 
 from allennlp.modules.elmo import batch_to_ids
 from datetime import datetime
+from sacremoses import MosesTokenizer # pylint: disable=import-error
+from pytorch_transformers import BertTokenizer
+
 
 
 class Visualizations:
@@ -20,21 +23,37 @@ class Visualizations:
             update='append' if self.loss_win else None,
             name=name,
             opts=dict(
-                xlabel='Step',
+                xlabel='Epoch',
                 ylabel='Loss',
                 title='Loss (mean)',
             )
         )
 
 
-class NoPad:
-    def __call__(self, batch):
-        # each element in "batch" is a dict {text:, label:}
-        sentences = [x['text'] for x in batch]
-        labels = [x['label'] for x in batch]
-        lengths = [len(x['text']) for x in batch]
+def print_loss(epoch, mode, loss, acc, time):
+    print(f"Epoch {epoch + 1} {mode}: Loss: {loss:.3f}, Acc: {acc:.3f}, "
+          f"Time: {time:.2f}")
 
-        return sentences, labels, lengths
+
+class Tokenizer:
+    def __init__(self, mode):
+        self.mode = mode
+
+        if self.mode is 'moses':
+            self.tokenizer = MosesTokenizer()
+
+        elif self.mode is 'bert':
+            self.tokenizer = BertTokenizer.from_pretrained(
+                'bert-base-cased', do_lower_case=False)
+
+    def tokenize(self, text):
+        if self.mode is 'moses':
+            text = self.tokenizer.tokenize(text, escape=False)
+
+        elif self.mode is 'bert':
+            text = self.tokenizer.encode(text)
+
+        return text
 
 
 class PadSequence:
@@ -47,3 +66,5 @@ class PadSequence:
         labels = [x['label'] for x in batch]
 
         return padded, lengths, labels
+
+
