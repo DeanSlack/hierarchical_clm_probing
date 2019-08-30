@@ -6,7 +6,7 @@ import time
 
 from allennlp.modules.elmo import Elmo, batch_to_ids
 from allennlp.commands.elmo import ElmoEmbedder
-from probing_models import LinearSST
+from probing_models import LinearSST, NonLinearSST
 from sst_dataset import SST
 from torch.utils.data import DataLoader
 from utilities import Visualizations, print_loss
@@ -213,7 +213,8 @@ def main():
     test_data = DataLoader(test_data, batch_size=batch_size, pin_memory=True,
                            shuffle=False, num_workers=6, collate_fn=ElmoCollate())
 
-    model = LinearSST(embedding_dim=1024, granularity=granularity)
+    model = NonLinearSST(embedding_dim=1024, hidden_dim=1024, granularity=granularity)
+    # model = LinearSST(embedding_dim=1024, granularity=granularity)
     model = model.cuda()
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters(), lr=learn_rate)

@@ -22,7 +22,7 @@ def get_args():
     parser.add_argument('--resume', default='', type=str)
     parser.add_argument('--save', default=False, type=bool)
     parser.add_argument('--lr', default=0.0001, type=float)
-    parser.add_argument('--granularity', default=True, type=bool)
+    parser.add_argument('--granularity', default=5, type=bool)
     parser.add_argument('--layer', default='1', type=int)
 
     return parser.parse_args()
@@ -138,24 +138,19 @@ def main():
     batch_size = args.batch_size
     learn_rate = args.lr
     epochs = args.epochs
-    fine_grain = False
+    granularity = args.granularity
     layer = args.layer
     vis = Visualizations()
-
-    if fine_grain is True:
-        granularity = 5
-    else:
-        granularity = 2
 
     # set tokenizer to process dataset with
     tokenizer = 'moses'
     # Load SST datasets into memory
     print("Processing datasets..")
-    train_data = SST(mode='train', subtrees=False, fine_grained=fine_grain,
+    train_data = SST(mode='train', subtrees=False, granularity=granularity,
                      tokenizer=tokenizer)
-    val_data = SST(mode='val', subtrees=False, fine_grained=fine_grain,
+    val_data = SST(mode='val', subtrees=False, granularity=granularity,
                    tokenizer=tokenizer)
-    test_data = SST(mode='test', subtrees=True, fine_grained=fine_grain,
+    test_data = SST(mode='test', subtrees=True, granularity=granularity,
                     tokenizer=tokenizer, threshold=0)
 
     # Printout dataset stats
