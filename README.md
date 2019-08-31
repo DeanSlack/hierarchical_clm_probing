@@ -1,12 +1,13 @@
 
 # **Linear Probing**
 
-Results collected from a simple linear probe layer trained on top of frozen contextualised word representations output from all intermediate layers of two state of the art contextualizers (BERT, ELMo). Much work has been done to analyse the internal representations and geometry of pretrained language models, in terms of syntactic and semantic subspaces. However, little has been done to determine how architecture-specific internal representations are mapped to a single contextual word embedding.
+Results collected from a simple linear probe layer trained on top of frozen contextualised word representations output from all intermediate layers of two state of the art contextualizers (BERT, ELMo). Much work has been done to analyse the internal representations and geometry of pretrained language models, in terms of syntactic and semantic subspaces. However, little has been done to determine how architecture-specific internal representations are mapped to a single contextual word embedding. To assess the level of hierarchical and contextual information present in an embedding, we use sequence-level classification tasks (which are typically solved by inputting the entire sequence into a classifier) and constrain the input to a single embedding contextualised on the full sequence.
 
 ## **To-do List**
 
 - Tabulate POS results
 - Add scalar mix results
+- Check different tokenization methods
 - Perform Binary Sentiment Classification
 - Implement early stopping with patience
 - Experiment will full treebank phrases for training for additional results
@@ -47,13 +48,13 @@ We perform sentence-level sentiment analysis using single word representations c
 |BERT (base, cased), layer 9  | 35.364   | 70.105
 |BERT (base, cased), layer 8  | 35.793   | 68.477
 |BERT (base, cased), layer 7  | 34.464   | 67.113
-|BERT (base, cased), layer 6  | 33.716   | 65.062
-|BERT (base, cased), layer 5  | 31.384*  | 63.948
-|BERT (base, cased), layer 4  | 31.984*  | 62.679
-|BERT (base, cased), layer 3  | 31.465*  |
-|BERT (base, cased), layer 2  | 31.407*  |
-|BERT (base, cased), layer 1  | 31.253*  |
-|BERT (base, cased), layer 0  | 24.145*  |
+|BERT (base, cased), layer 6  | 33.716   | 65.062*
+|BERT (base, cased), layer 5  | 31.384*  | 65.217*
+|BERT (base, cased), layer 4  | 31.984*  | 66.894*
+|BERT (base, cased), layer 3  | 31.465*  | 66.640
+|BERT (base, cased), layer 2  | 31.407*  | 65.755
+|BERT (base, cased), layer 1  | 31.253*  | 65.512
+|BERT (base, cased), layer 0  | 24.145*  | 56.220
 |||
 |ELMo (original), layer 2     | 39.461   |
 |ELMo (original), layer 1     | 38.206   |

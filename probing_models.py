@@ -21,10 +21,13 @@ class NonLinearSST(nn.Module):
 
         self.linear1 = nn.Linear(embedding_dim, hidden_dim)
         self.linear2 = nn.Linear(hidden_dim, granularity)
+        self.drop = nn.Dropout(p=0.3)
 
     def forward(self, embedding):
-        hidden_space = F.relu(self.linear1(embedding))
+        hidden_space = F.leaky_relu(self.linear1(embedding))
+        hidden_space = self.drop(hidden_space)
         label_space = self.linear2(hidden_space)
+        label_space = self.drop(label_space)
         label_scores = F.log_softmax(label_space, dim=1)
 
         return label_scores

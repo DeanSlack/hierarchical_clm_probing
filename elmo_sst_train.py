@@ -192,11 +192,11 @@ def main():
     tokenizer = 'moses'
     # Load SST datasets into memory
     print("Processing datasets..")
-    train_data = SST(mode='train', subtrees=True, granularity=granularity,
+    train_data = SST(mode='train', subtrees=False, granularity=granularity,
                      tokenizer=tokenizer)
     val_data = SST(mode='val', subtrees=False, granularity=granularity,
                    tokenizer=tokenizer)
-    test_data = SST(mode='test', subtrees=True, granularity=granularity,
+    test_data = SST(mode='test', subtrees=False, granularity=granularity,
                     tokenizer=tokenizer)
     # Printout dataset stats
     print(f"Training samples: {len(train_data)}")
@@ -213,8 +213,8 @@ def main():
     test_data = DataLoader(test_data, batch_size=batch_size, pin_memory=True,
                            shuffle=False, num_workers=6, collate_fn=ElmoCollate())
 
-    model = NonLinearSST(embedding_dim=1024, hidden_dim=1024, granularity=granularity)
-    # model = LinearSST(embedding_dim=1024, granularity=granularity)
+    # model = NonLinearSST(embedding_dim=1024, hidden_dim=1024, granularity=granularity)
+    model = LinearSST(embedding_dim=1024, granularity=granularity)
     model = model.cuda()
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.parameters(), lr=learn_rate)
