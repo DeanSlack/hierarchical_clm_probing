@@ -46,6 +46,8 @@ class SST(Dataset):
             label_to_id['positive'] = 1
             label_to_id['very positive'] = 1
 
+
+
         if self.subtrees == False:
             for i in self.data:
                 i['label'] = label_to_id[i['label']]

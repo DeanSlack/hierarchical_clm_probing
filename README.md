@@ -47,10 +47,10 @@ We perform sentence-level sentiment analysis using single word representations c
 |BERT (base, cased), layer 10 | 36.734   | 70.489
 |BERT (base, cased), layer 9  | 35.364   | 70.105
 |BERT (base, cased), layer 8  | 35.793   | 68.477
-|BERT (base, cased), layer 7  | 34.464   | 67.113
-|BERT (base, cased), layer 6  | 33.716   | 65.062*
-|BERT (base, cased), layer 5  | 31.384*  | 65.217*
-|BERT (base, cased), layer 4  | 31.984*  | 66.894*
+|BERT (base, cased), layer 7  | 34.464   | 68.198
+|BERT (base, cased), layer 6  | 33.716   | 67.770
+|BERT (base, cased), layer 5  | 31.384*  | 67.084
+|BERT (base, cased), layer 4  | 31.984*  | 67.004
 |BERT (base, cased), layer 3  | 31.465*  | 66.640
 |BERT (base, cased), layer 2  | 31.407*  | 65.755
 |BERT (base, cased), layer 1  | 31.253*  | 65.512
