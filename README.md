@@ -8,7 +8,9 @@ Results collected from a simple linear probe layer trained on top of frozen cont
 - Tabulate POS results
 - Add scalar mix results
 - Check different tokenization methods
-- Perform Binary Sentiment Classification
+- Which model encodes more local sentiment, and which more global? (Use performance of parent, grandparent, etc)
+
+- Experiment using full training set, with higher sentence length threshold
 - Implement early stopping with patience
 - Experiment will full treebank phrases for training for additional results
 - Run all pretrained representations on non-linear classifier to determine the performance being constrained by using linear models.
@@ -36,35 +38,35 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 
 **GloVe (840B.300d)**: (GloVe description)
 
-## **Sentiment Analysis (root sentences)**
+## **Sentiment Analysis (root-sentence training only)**
 
 We perform sentence-level sentiment analysis using single word representations contextualised on full sentences. We experiment with both fine-grained (5 classes) and binary, using the Stanford Sentiment Treebank (SST).
 
-| Contextualizer              | SST-5    | SST-2    |
-|:--------------------------- |:--------:|:--------:|
-|BERT (base, cased), layer 12 | 39.180   | 74.011
-|BERT (base, cased), layer 11 | 37.628   | 72.173
-|BERT (base, cased), layer 10 | 36.734   | 70.489
-|BERT (base, cased), layer 9  | 35.364   | 70.105
-|BERT (base, cased), layer 8  | 35.793   | 68.477
-|BERT (base, cased), layer 7  | 34.464   | 68.198
-|BERT (base, cased), layer 6  | 33.716   | 67.770
-|BERT (base, cased), layer 5  | 31.384*  | 67.084
-|BERT (base, cased), layer 4  | 31.984*  | 67.004
-|BERT (base, cased), layer 3  | 31.465*  | 66.640
-|BERT (base, cased), layer 2  | 31.407*  | 65.755
-|BERT (base, cased), layer 1  | 31.253*  | 65.512
-|BERT (base, cased), layer 0  | 24.145*  | 56.220
+| Contextualizer              | SST-5    | SST-5 Parent   | SST-2
+|:--------------------------- |:--------:|:--------------:|:--------:|
+|BERT (base, cased), layer 12 | 39.180   |                | 74.011
+|BERT (base, cased), layer 11 | 37.628   |                | 72.173
+|BERT (base, cased), layer 10 | 36.734   |                | 70.489
+|BERT (base, cased), layer 9  | 35.364   |                | 70.105
+|BERT (base, cased), layer 8  | 35.793   |                | 68.477
+|BERT (base, cased), layer 7  | 34.464   |                | 68.198
+|BERT (base, cased), layer 6  | 33.716   |                | 67.770
+|BERT (base, cased), layer 5  | 31.384*  |                | 67.084
+|BERT (base, cased), layer 4  | 31.984*  |                | 67.004
+|BERT (base, cased), layer 3  | 31.465*  |                | 66.640
+|BERT (base, cased), layer 2  | 31.407*  |                | 65.755
+|BERT (base, cased), layer 1  | 31.253*  |                | 65.512
+|BERT (base, cased), layer 0  | 24.145*  |                | 56.220
 |||
-|ELMo (original), layer 2     | 39.461   |
-|ELMo (original), layer 1     | 38.206   |
-|ELMo (original), layer 0     | 29.097   |
+|ELMo (original), layer 2     | 42.193   |                | 76.807
+|ELMo (original), layer 1     | 40.955   |                |
+|ELMo (original), layer 0     | 31.298   |                |
 |||
-|ELMo (5.5B), layer 2         | 40.151   | 77.013
-|ELMo (5.5B), layer 1         | 38.701   | 75.042
-|ELMo (5.5B), layer 0         | 29.052   | 57.197
+|ELMo (5.5B), layer 2         | 40.151   |                |77.013
+|ELMo (5.5B), layer 1         | 38.701   |                |75.042
+|ELMo (5.5B), layer 0         | 29.052   |                |57.197
 |||
-| GloVe (840B.300d)           | 28.808   | 57.721  |
+| GloVe (840B.300d)           | 28.808   |                |57.721  |
 *retest
 
 ## **Part of Speech**

@@ -1,10 +1,28 @@
 import visdom
+import argparse
 
 from allennlp.modules.elmo import batch_to_ids
 from datetime import datetime
 from sacremoses import MosesTokenizer # pylint: disable=import-error
 from pytorch_transformers import BertTokenizer
 
+
+def get_args():
+    """get input arguments"""
+    parser = argparse.ArgumentParser(description="train")
+
+    parser.add_argument('--epochs', default=60, type=int)
+    parser.add_argument('--batch_size', default=16, type=int)
+    parser.add_argument('--resume', default='', type=str)
+    parser.add_argument('--save', default=False, type=bool)
+    parser.add_argument('--lr', default=0.0001, type=float)
+    parser.add_argument('--config', default='base_cased', type=str)
+    parser.add_argument('--layer', default='12', type=int)
+    parser.add_argument('--level', default='0', type=int)
+    parser.add_argument('--granularity', default='6', type=int)
+    parser.add_argument('--subtrees', default=False, type=bool)
+
+    return parser.parse_args()
 
 
 class Visualizations:
