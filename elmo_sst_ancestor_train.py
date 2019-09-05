@@ -152,6 +152,9 @@ def main():
     level = args.level
     subtrees = args.subtrees
 
+    savename = f"models/sst/elmo_{config}_{layer}_sst-{granularity}_{level}"
+    print(savename)
+
     # Start visdom environment
     vis = Visualizations()
 
@@ -227,7 +230,6 @@ def main():
             print_loss(epoch, 'test ', test_out[0], test_out[1], test_out[2])
 
             if save is True:
-                savename = f"models/sst/elmo_{config}_{layer}_sst-{granularity}_{level}"
                 torch.save(model.state_dict(), savename + ".pt")
 
         # plot epoch stats
@@ -237,3 +239,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    

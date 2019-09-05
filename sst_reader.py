@@ -23,7 +23,7 @@ def sst_reader(train=True, dev=False, test=False, level='1', subtrees=False):
                 word_labels = []
                 for idx, _ in enumerate(tree.leaves()):
                     leafpos = tree.leaf_treeposition(idx)
-                    if level == 0:
+                    if level == -1:
                         parent_pos = leafpos[0]
                     else:
                         parent_pos = leafpos[:-(level+1)]
@@ -49,7 +49,7 @@ def sst_reader(train=True, dev=False, test=False, level='1', subtrees=False):
                         word_labels = []
                         for idx, _ in enumerate(subtree.leaves()):
                             leafpos = subtree.leaf_treeposition(idx)
-                            if level == 0:
+                            if level == -1:
                                 parent_pos = leafpos[0]
                             else:
                                 parent_pos = leafpos[:-(level+1)]

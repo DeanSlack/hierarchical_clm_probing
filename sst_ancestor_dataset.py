@@ -2,6 +2,7 @@ from torch.utils.data import Dataset
 from utilities import Tokenizer
 from sst_reader import sst_reader
 
+
 class SSTAncestor(Dataset):
     def __init__(self, mode='train', tokenizer=None, granularity=3,
                  threshold=1, level=1, subtrees=False):

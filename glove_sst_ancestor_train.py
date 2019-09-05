@@ -4,45 +4,41 @@ import torch.nn as nn
 import torch.optim as optim
 import time
 
-from pytorch_transformers import BertModel
 from probing_models import LinearSST, NonLinearSST
 from sst_ancestor_dataset import SSTAncestor
 from torch.utils.data import DataLoader
 from utilities import Visualizations, print_loss
 from torch.nn.utils.rnn import pad_sequence
+from torchnlp.word_to_vector import GloVe
 
 
 def get_args():
     """get input arguments"""
     parser = argparse.ArgumentParser(description="train")
 
-    parser.add_argument('--epochs', default=100, type=int)
+    parser.add_argument('--epochs', default=50, type=int)
     parser.add_argument('--batch_size', default=16, type=int)
     parser.add_argument('--resume', default='', type=str)
     parser.add_argument('--save', default=False, type=bool)
     parser.add_argument('--lr', default=0.0001, type=float)
-    parser.add_argument('--config', default='base_cased', type=str)
-    parser.add_argument('--layer', default='12', type=int)
-    parser.add_argument('--level', default='-1', type=int)
+    parser.add_argument('--config', default='large', type=str)
+    parser.add_argument('--level', default='0', type=int)
     parser.add_argument('--granularity', default='6', type=int)
     parser.add_argument('--subtrees', default=False, type=bool)
 
     return parser.parse_args()
 
 
-class BertCollate:
+class GloVeCollate:
+    def __init__(self):
+        self.vectors = GloVe()
     def __call__(self, batch):
         # each element in "batch" is a dict {text:, label:}
         lengths = [len(x['text']) for x in batch]
-        sentences = [torch.LongTensor(x['text']) for x in batch]
+        sentences = [self.vectors[x['text']] for x in batch]
         labels = [x['label'] for x in batch]
-        base = [x['base'] for x in batch]
-        # Pad sentences
-        sentences = pad_sequence(sentences, batch_first=True)
 
-        tok_to_label = [x['map'] for x in batch]
-
-        return sentences, labels, lengths, tok_to_label, base
+        return sentences, labels, lengths
 
 
 def train(train_loader, model, criterion, optimizer, embedder, layer, granularity):
@@ -54,24 +50,14 @@ def train(train_loader, model, criterion, optimizer, embedder, layer, granularit
     model.train()
 
     for idx, sample in enumerate(train_loader):
-        sentences, labels, lengths, tok_to_label, _ = sample
-        sentences = torch.LongTensor(sentences).cuda()
-
-        with torch.no_grad():
-            # scalar mix of layers
-            if layer == -1:
-                sentences = embedder(sentences)[0]
-            # individual layer extraction
-            else:
-                sentences = embedder(sentences)[2][layer]
-
-        # Get activations from individual layers
+        sentences, labels, lengths = sample
+        # Get all intermediate layer embeddings from elmo
         word_batch = []
         word_labels = []
         for i in range(len(lengths)):
-            for j in range(len(tok_to_label[i])):
-                word_batch.append(sentences[i][tok_to_label[i][j]])
-                word_labels.append(labels[i][j])
+            for j in range(lengths[i]):
+                word_batch.append(sentences[i][j])
+                word_labels.append(labels[i])
 
         num_samples += len(word_labels)
         word_batch = torch.stack(word_batch, dim=0).cuda()
@@ -112,24 +98,15 @@ def test(test_loader, model, criterion, embedder, layer, granularity):
 
     with torch.no_grad():
         for idx, sample in enumerate(test_loader):
-            sentences, labels, lengths, tok_to_label, _ = sample
-            sentences = torch.LongTensor(sentences).cuda()
+            sentences, labels, lengths = sample
 
-            with torch.no_grad():
-                if layer == -1:
-                    # scalar mix of layers
-                    sentences = embedder(sentences)[0]
-                else:
-                    # individual layer extraction
-                    sentences = embedder(sentences)[2][layer]
-
-            # Get activations from individual layers
+            # Get activations per word
             word_batch = []
             word_labels = []
             for i in range(len(lengths)):
-                for j in range(len(tok_to_label[i])):
-                    word_batch.append(sentences[i][tok_to_label[i][j]])
-                    word_labels.append(labels[i][j])
+                for j in range(lengths[i]):
+                    word_batch.append(sentences[i][j])
+                    word_labels.append(labels[i])
 
             num_samples += len(word_labels)
             word_batch = torch.stack(word_batch, dim=0).cuda()
@@ -157,23 +134,22 @@ def test(test_loader, model, criterion, embedder, layer, granularity):
 def main():
     # Collect input arguments & hyperparameters
     args = get_args()
-    config = args.config
     batch_size = args.batch_size
     learn_rate = args.lr
     epochs = args.epochs
     save = args.save
     granularity = args.granularity
-    layer = args.layer
     level = args.level
     subtrees = args.subtrees
-    savename = f"models/sst/bert_{config}_{layer}_sst-{granularity}_{level}"
+
+    savename = f"models/sst/GloVe_sst-{granularity}_{level}"
     print(savename)
 
     # Start visdom environment
     vis = Visualizations()
 
     # set tokenizer to process dataset with
-    tokenizer = 'bert'
+    tokenizer = 'moses'
     # Load SST datasets into memory
     print("Processing datasets..")
     train_data = SSTAncestor(mode='train', tokenizer=tokenizer, granularity=granularity,
@@ -190,25 +166,24 @@ def main():
 
     # Load datasets into torch dataloaders
     train_data = DataLoader(train_data, batch_size=batch_size, pin_memory=True,
-                            shuffle=True, num_workers=6, collate_fn=BertCollate())
+                            shuffle=True, num_workers=6, collate_fn=GloVeCollate())
 
     val_data = DataLoader(val_data, batch_size=batch_size, pin_memory=True,
-                          shuffle=False, num_workers=6, collate_fn=BertCollate())
+                          shuffle=False, num_workers=6, collate_fn=GloVeCollate())
 
     test_data = DataLoader(test_data, batch_size=batch_size, pin_memory=True,
-                           shuffle=False, num_workers=6, collate_fn=BertCollate())
+                           shuffle=False, num_workers=6, collate_fn=GloVeCollate())
 
-    # Load contextualizer model (BERT)
-    embedder = BertModel.from_pretrained('bert-base-cased', output_hidden_states=True)
-    embedder.eval().cuda()
+    embedder = None
+    layer = None
 
     # for sentence level prediction, there are no instances of the "None" class.
-    if level == 0 or level == -1:
+    if level == 0:
         granularity -= 1
 
     # initialize probing model
-    model = LinearSST(embedding_dim=768, granularity=granularity)
-    # model = NonLinearSST(embedding_dim=768, hidden_dim=1024, granularity=granularity)
+    model = LinearSST(embedding_dim=1024, granularity=granularity)
+    # model = NonLinearSST(embedding_dim=1024, hidden_dim=1024, granularity=granularity)
     model = model.cuda()
 
     # set loss function and optimizer
@@ -220,7 +195,7 @@ def main():
     for epoch in range(epochs):
         # Output = (loss, acc, time)
         train_out = train(train_data, model, criterion, optimizer, embedder, layer,
-                      granularity)
+                          granularity)
 
         val_out = test(val_data, model, criterion, embedder, layer, granularity)
         test_out = test(test_data, model, criterion, embedder, layer, granularity)
