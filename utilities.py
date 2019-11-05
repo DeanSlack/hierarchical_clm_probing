@@ -5,6 +5,9 @@ from allennlp.modules.elmo import batch_to_ids
 from datetime import datetime
 from sacremoses import MosesTokenizer # pylint: disable=import-error
 from pytorch_transformers import BertTokenizer
+# from plotly.subplots import make_subplots
+# import plotly.graph_objects as go
+
 
 
 def get_args():
@@ -24,16 +27,17 @@ def get_args():
 
     return parser.parse_args()
 
-
 class Visualizations:
-    def __init__(self, env_name='main'):
-        if env_name is None:
-            env_name = str(datetime.now().strftime("%d-%m %Hh%M"))
+    def __init__(self, env_name='main', title='loss'):
         self.env_name = env_name
         self.vis = visdom.Visdom(env=self.env_name)
         self.loss_win = None
+        self.title = title
+        # self.fig = make_subplots(rows=1, cols=2)
+
 
     def plot_loss(self, loss, step, name):
+        # self.fig.add_trace(go.Line(y=[loss], x=[step]), row=1, col=1)
         self.loss_win = self.vis.line(
             [loss],
             [step],
@@ -43,32 +47,35 @@ class Visualizations:
             opts=dict(
                 xlabel='Epoch',
                 ylabel='Loss',
-                title='Loss (mean)',
+                title=self.title,
             )
         )
 
 
-def print_loss(epoch, mode, loss, acc, time):
-    print(f"Epoch {epoch + 1} {mode}: Loss: {loss:.3f}, Acc: {acc:.3f}, "
-          f"Time: {time:.2f}")
+def print_loss(epoch, train, val, test):
+    print(f"{epoch[0]+1}/{epoch[1]}: train/val/test "
+          f"loss: {train[0]:.2f}, {val[0]:.2f}, {test[0]:.2f}  "
+          f"acc: {train[1]:.2f}, {val[1]:.2f}, {test[1]:.2f}")
 
+def print_final_loss(config, mode, loss, acc, time):
+    print(f"Config: {config} {mode}: Loss: {loss:.3f}, Acc: {acc:.3f}")
 
 class Tokenizer:
     def __init__(self, mode):
         self.mode = mode
 
-        if self.mode is 'moses':
+        if self.mode == 'moses':
             self.tokenizer = MosesTokenizer()
 
-        elif self.mode is 'bert':
+        elif self.mode == 'bert-base-cased':
             self.tokenizer = BertTokenizer.from_pretrained(
                 'bert-base-cased', do_lower_case=False)
 
     def tokenize(self, text):
-        if self.mode is 'moses':
+        if self.mode == 'moses':
             text = self.tokenizer.tokenize(text, escape=False)
 
-        elif self.mode is 'bert':
+        elif self.mode == 'bert-base-cased':
             text = self.tokenizer.encode(text)
 
         return text
@@ -84,5 +91,8 @@ class PadSequence:
         labels = [x['label'] for x in batch]
 
         return padded, lengths, labels
+
+
+
 
 

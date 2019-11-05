@@ -1,90 +1,124 @@
+import torch
+import os
+from embedders import TokenEmbedder
 from torch.utils.data import Dataset
 from utilities import Tokenizer
 from sst_reader import sst_reader
 
 
 class SSTAncestor(Dataset):
-    def __init__(self, mode='train', tokenizer=None, granularity=3,
-                 threshold=1, level=1, subtrees=False):
+    def __init__(self, mode='train', tokenizer=None, embed=None, granularity=3,
+                 threshold=3, level=-1, subtrees=False, layer=0, save=True, load=True):
 
-        if tokenizer:
-            self.tokenizer = Tokenizer(tokenizer)
+        self.level = level
+        self.config = f'sst/saved/sst{granularity}_{mode}_{embed}-{layer}.pt'
 
-        if mode == 'train':
-            self.data = list(sst_reader(train=True, dev=False, test=False, level=level,
-                                        subtrees=subtrees))
+        if load and os.path.exists(self.config):
+            self.data = torch.load(self.config,
+                                   map_location=lambda storage, loc: storage.cuda(0))
 
-        elif mode == 'val':
-            self.data = list(sst_reader(train=False, dev=True, test=False, level=level,
-                                        subtrees=subtrees))
+        else:
+            if tokenizer:
+                tokenizer = Tokenizer(tokenizer)
 
-        elif mode == 'test':
-             self.data = list(sst_reader(train=False, dev=False, test=True, level=level,
-                                         subtrees=subtrees))
+            if embed:
+                embedder = TokenEmbedder(embed)
 
-        if granularity == 6:
-            label_to_id = {}
-            label_to_id['0'] = 0
-            label_to_id['1'] = 1
-            label_to_id['2'] = 2
-            label_to_id['3'] = 3
-            label_to_id['4'] = 4
-            label_to_id['None'] = 5
+            if mode == 'train':
+                self.data = list(sst_reader(train=True, dev=False, test=False,
+                                            level=level, subtrees=subtrees))
 
-        elif granularity == 3:
-            label_to_id = {}
-            label_to_id['None'] = 3
-            label_to_id['0'] = 0
-            label_to_id['1'] = 0
-            label_to_id['2'] = 2
-            label_to_id['3'] = 1
-            label_to_id['4'] = 1
+            elif mode == 'val':
+                self.data = list(sst_reader(train=False, dev=True, test=False,
+                                            level=level, subtrees=subtrees))
 
-        data_list = []
-        for i in self.data:
-            if len(i['text'].split()) >= threshold:
-                label = [label_to_id[x] for x in i['label']]
-                base = [label_to_id[x] for x in i['base']]
+            elif mode == 'test':
+                self.data = list(sst_reader(train=False, dev=False, test=True,
+                                            level=level, subtrees=subtrees))
+
+            if granularity == 6:
+                label_to_id = {
+                    '0': 0,
+                    '1': 1,
+                    '2': 2,
+                    '3': 3,
+                    '4': 4,
+                    None: 5
+                }
+
+            elif granularity == 3:
+                label_to_id = {
+                    '0': 0,
+                    '1': 0,
+                    '2': 2,
+                    '3': 1,
+                    '4': 1,
+                    None: 3
+                }
+
+            data_list = []
+            for i in self.data:
                 text = i['text'].split()
-                # map to labels
-                orig_to_tok_map = []
 
-                if tokenizer:
-                    tokens = []
-                    # map to labels
-                    for word in text:
-                        orig_to_tok_map.append(len(tokens))
-                        tokens.extend(self.tokenizer.tokenize(word))
+                if len(text) >= threshold:
+                    labels = []
+                    for l in i['label']:
+                        labels.append([label_to_id[x] for x in l])
 
-                    text = tokens
+                    # perform further tokenization on words
+                    if tokenizer:
+                        orig_to_tok_map = []
+                        tokens = []
+                        for word in text:
+                            orig_to_tok_map.append(len(tokens))
+                            tokens.extend(tokenizer.tokenize(word))
 
-                data_list.append({'text': text, 'label': label, 'map': orig_to_tok_map,
-                                  'base': base})
+                        text = tokens
 
-        self.data = data_list
-        del data_list
+                    if embed:
+                        # tokens: [layer, timestep, embed_dim], device=cuda
+                        tokens = embedder.embed(text, layer)
+                        labels = torch.LongTensor(labels).cuda()
+                        label_count = 0
+                        for i in range(len(tokens[0])):
+                            if not tokenizer or i in orig_to_tok_map:
+                                token_list = []
+                                for j in range(len(tokens)):
+                                    token_list.append(tokens[j][i])
+                                token_list = torch.stack(token_list).half()
+                                data_list.append([token_list, labels[label_count, :]])
+                                label_count += 1
 
-        if granularity == 3:
-            for i in range(len(self.data)):
-                del_idxs = []
-                for j in range(len(self.data[i]['label'])):
-                    if self.data[i]['label'][j] == 2:
-                        del_idxs.append(j)
+            self.data = data_list
+            del data_list
 
-                self.data[i]['label'] = [self.data[i]['label'][x] for x in \
-                    range(len(self.data[i]['label'])) if x not in del_idxs]
-                self.data[i]['map'] = [self.data[i]['map'][x] for x in \
-                    range(len(self.data[i]['map'])) if x not in del_idxs]
-                self.data[i]['base'] = [self.data[i]['base'][x] for x in \
-                    range(len(self.data[i]['base'])) if x not in del_idxs]
+            if granularity == 3:
+                for i in range(len(self.data)):
+                    del_idxs = []
+                    for j in range(len(self.data[i]['label'])):
+                        if self.data[i]['label'][j] == 2:
+                            del_idxs.append(j)
+
+                    self.data[i]['label'] = [self.data[i]['label'][x] for x in \
+                        range(len(self.data[i]['label'])) if x not in del_idxs]
+                    self.data[i]['map'] = [self.data[i]['map'][x] for x in \
+                        range(len(self.data[i]['map'])) if x not in del_idxs]
+                    self.data[i]['base'] = [self.data[i]['base'][x] for x in \
+                        range(len(self.data[i]['base'])) if x not in del_idxs]
+
+            if save == True:
+                for i in range(len(self.data[0][0])):
+                    words = torch.stack([x[0][i] for x in self.data]).half()
+                    labels = torch.stack([x[1] for x in self.data])
+                    data = [[words[i], labels[i]] for i in range(len(words))]
+                    save = f'sst/saved/sst{granularity}_{mode}_{embed}-{i}.pt'
+                    torch.save(data, save)
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, idx):
-        sentence = self.data[idx]['text']
-        label = self.data[idx]['label']
-        base = self.data[idx]['base']
-        orig_to_tok_map = self.data[idx]['map']
+        word = self.data[idx][0]
+        label = self.data[idx][1][self.level+1]
 
-        return {'text': sentence, 'label': label, 'map': orig_to_tok_map, 'base': base}
+        return word, label

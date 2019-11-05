@@ -3,10 +3,10 @@ import torch.nn.functional as F
 
 
 class LinearSST(nn.Module):
-    def __init__(self, embedding_dim, granularity):
+    def __init__(self, embed_dim, granularity):
         super(LinearSST, self).__init__()
 
-        self.linear = nn.Linear(embedding_dim, granularity)
+        self.linear = nn.Linear(embed_dim, granularity)
 
     def forward(self, embedding):
         label_space = self.linear(embedding)
@@ -16,10 +16,10 @@ class LinearSST(nn.Module):
 
 
 class NonLinearSST(nn.Module):
-    def __init__(self, embedding_dim, hidden_dim, granularity):
+    def __init__(self, embed_dim, hidden_dim, granularity):
         super(NonLinearSST, self).__init__()
 
-        self.linear1 = nn.Linear(embedding_dim, hidden_dim)
+        self.linear1 = nn.Linear(embed_dim, hidden_dim)
         self.linear2 = nn.Linear(hidden_dim, granularity)
         self.drop = nn.Dropout(p=0.3)
 
