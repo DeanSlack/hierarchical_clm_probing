@@ -93,6 +93,8 @@ For a sequence of contextualized word representations, each token is tasked with
 |GPT2 (base), layer 11        | -       |60.55   | 50.45   | 46.74    | 33.16   |
 |GPT2 (base), layer 12        | -       |**62.61**|**53.86**|**49.55**|**36.14**|
 
+![alt-text](https://github.com/DeanSlack/lm_probing/blob/master/figures/gpt2.svg)
+
 ### XLNet (base)
 
 | Contextualizer               | Leaf    |Parent  | GParent | GGParent | Root     |
@@ -111,6 +113,8 @@ For a sequence of contextualized word representations, each token is tasked with
 |XLNet (base), layer 11        | -       |63.68   | 56.54   | 51.54    | 40.48    |
 |XLNet (base), layer 12        | -       |62.67   | 54.74   | 49.95    | 39.59    |
 
+![alt-text](https://github.com/DeanSlack/lm_probing/blob/master/figures/xlnet.svg)
+
 ### Reformer (base)
 
 | Contextualizer               | Leaf    |Parent  | GParent | GGParent | Root     |
@@ -128,6 +132,8 @@ For a sequence of contextualized word representations, each token is tasked with
 |Reformer (base), layer 10      | -       |64.57   | 57.80   | 53.30    | 39.29    |
 |Reformer (base), layer 11      | -       |63.91   | 57.52   | 53.23    | 39.86    |
 |Reformer (base), layer 12      | -       |63.91   | 57.08   | 52.91    | 40.07    |
+
+![alt-text](https://github.com/DeanSlack/lm_probing/blob/master/figures/reformer.svg)
 
 ### BERT (large, cased)
 
@@ -158,6 +164,8 @@ For a sequence of contextualized word representations, each token is tasked with
 |BERT (large, cased), layer 22 |86.87   |64.01   | 55.98   | 51.45    | 40.23   |
 |BERT (large, cased), layer 23 |87.02   |63.55   | 55.63   | 50.96    | 40.01   |
 |BERT (large, cased), layer 24 |86.69   |63.05   | 55.91   | 50.90    | 40.20   |
+
+![alt-text](https://github.com/DeanSlack/lm_probing/blob/master/figures/bert_large.svg)
 
 ### GPT2 (medium)
 
