@@ -104,7 +104,7 @@ For a sequence of contextualized word representations, each token is tasked with
 |GPT2 (base), layer 9         | -       |61.90   | 52.74   | 48.90    | 34.26   |
 |GPT2 (base), layer 10        | -       |61.42   | 51.89   | 48.11    | 33.92   |
 |GPT2 (base), layer 11        | -       |60.55   | 50.45   | 46.74    | 33.16   |
-|GPT2 (base), layer 12        | -       |**62.61**|**53.86**|**49.55 **|**36.14 **|
+|GPT2 (base), layer 12        | -       |**62.61**|**53.86**|**49.55**|**36.14**|
 
 ### XLNet (base)
 
