@@ -11,6 +11,17 @@ Results for linear probing tasks for all pretrained representations used in the 
 
 The following pretrained contextualizer models are used in this work.
 
+**Reformer (base)**: 12-layer, 768-hidden, 12-heads, 125M parameters
+
+**XLNet (base)**: 2-layer, 768-hidden, 12-heads, 110M parameters.
+XLNet English model
+
+**GPT2 (medium)**:24-layer, 1024-hidden, 16-heads, 345M parameters.
+OpenAI’s Medium-sized GPT-2 English model
+
+**GPT2 (base)**: 12-layer, 768-hidden, 12-heads, 117M parameters.
+OpenAI GPT-2 English model
+
 **BERT (large, cased)**: 24-layer, 1024-hidden, 16-heads, 340M parameters.
 Trained on cased English text.
 
@@ -98,23 +109,23 @@ For a sequence of contextualized word representations, each token is tasked with
 |XLNet (base), layer 11        | -       |63.68   | 56.54   | 51.54    | 40.48    |
 |XLNet (base), layer 12        | -       |62.67   | 54.74   | 49.95    | 39.59    |
 
-### RoBERTa (base)
+### Reformer (base)
 
 | Contextualizer               | Leaf    |Parent  | GParent | GGParent | Root     |
 |:-----------------------------|:-------:|--------|:-------:|:--------:|:--------:|
-|RoBERTa (base), layer 0       | -       |61.65   | 49.96   | 43.78    | 29.43    |
-|RoBERTa (base), layer 1       | -       |62.86   | 52.97   | 48.13    | 34.35    |
-|RoBERTa (base), layer 2       | -       |62.79   | 54.05   | 49.89    | 34.09    |
-|RoBERTa (base), layer 3       | -       |63.79   | 55.87   | 51.53    | 35.08    |
-|RoBERTa (base), layer 4       | -       |64.53   | 56.78   | 52.60    | 36.37    |
-|RoBERTa (base), layer 5       | -       |64.69   | 57.67   | 53.84    | 38.73    |
-|RoBERTa (base), layer 6       | -       |**65.18**| 57.88   | 54.28    | 40.56    |
-|RoBERTa (base), layer 7       | -       |64.89   |**58.14**|**54.57** | 40.29    |
-|RoBERTa (base), layer 8       | -       |64.80   | 58.03   | 54.28    |**41.04**|
-|RoBERTa (base), layer 9       | -       |64.49   | 57.72   | 53.85    | 39.54    |
-|RoBERTa (base), layer 10      | -       |64.57   | 57.80   | 53.30    | 39.29    |
-|RoBERTa (base), layer 11      | -       |63.91   | 57.52   | 53.23    | 39.86    |
-|RoBERTa (base), layer 12      | -       |63.91   | 57.08   | 52.91    | 40.07    |
+|Reformer (base), layer 0       | -       |61.65   | 49.96   | 43.78    | 29.43    |
+|Reformer (base), layer 1       | -       |62.86   | 52.97   | 48.13    | 34.35    |
+|Reformer (base), layer 2       | -       |62.79   | 54.05   | 49.89    | 34.09    |
+|Reformer (base), layer 3       | -       |63.79   | 55.87   | 51.53    | 35.08    |
+|Reformer (base), layer 4       | -       |64.53   | 56.78   | 52.60    | 36.37    |
+|Reformer (base), layer 5       | -       |64.69   | 57.67   | 53.84    | 38.73    |
+|Reformer (base), layer 6       | -       |**65.18**| 57.88   | 54.28    | 40.56    |
+|Reformer (base), layer 7       | -       |64.89   |**58.14**|**54.57** | 40.29    |
+|Reformer (base), layer 8       | -       |64.80   | 58.03   | 54.28    |**41.04**|
+|Reformer (base), layer 9       | -       |64.49   | 57.72   | 53.85    | 39.54    |
+|Reformer (base), layer 10      | -       |64.57   | 57.80   | 53.30    | 39.29    |
+|Reformer (base), layer 11      | -       |63.91   | 57.52   | 53.23    | 39.86    |
+|Reformer (base), layer 12      | -       |63.91   | 57.08   | 52.91    | 40.07    |
 
 ### BERT (large, cased)
 
