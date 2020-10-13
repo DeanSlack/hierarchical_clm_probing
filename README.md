@@ -51,59 +51,124 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 
 **GloVe (840B.300d)**: (GloVe description)
 
-## **Ancestor Sentiment Analysis (root-sentence training only)**
+## **Ancestor Tagging Avg (root-sentence training only)**
 
 For a sequence of contextualized word representations, each token is tasked with predicting the sentiment classification of it's parent, grandparent, or great-grandparent. For cases where the token doesn't have a grandparent or great-grandparent, the linear model is tasked to predict a "None" classification label. Additionally, we perform sentence-level (root) sentiment analysis using single word representations contextualised on full sentences. We experiment with both fine-grained (5 classes) and binary, using the Stanford Sentiment Treebank (SST).
 
-| Contextualizer              | Root     | Leaf    |Parent  | GParent | GGParent |
-|:--------------------------- |:--------:|:-------:|--------|:-------:|:--------:|
-|BERT (base, cased), layer 12 | 41.155   | 88.325  |62.693  | 53.289  | 48.154
-|BERT (base, cased), layer 11 | 40.978   | 88.950  |62.934  | 53.343  | 48.165
-|BERT (base, cased), layer 10 | 41.256   | 89.328  |63.123  | 53.653  | 48.272
-|BERT (base, cased), layer 9  | 40.822   | 89.760  |63.359  | 53.945  | 48.366
-|BERT (base, cased), layer 8  | 40.374   | 90.204  |63.262  | 53.480  | 47.559
-|BERT (base, cased), layer 7  | 40.207   | 90.926  |63.109  | 53.107  | 47.160
-|BERT (base, cased), layer 6  | 39.414   | 91.314  |62.634  | 52.354  | 46.454
-|BERT (base, cased), layer 5  | 39.091   | 91.656  |62.039  | 51.306  | 45.552
-|BERT (base, cased), layer 4  | 37.911   | 91.923  |61.808  | 50.758  | 44.917
-|BERT (base, cased), layer 3  | 38.202   | 92.157  |61.472  | 50.286  | 44.291
-|BERT (base, cased), layer 2  | 36.984   | 92.383  |61.338  | 49.974  | 43.852
-|BERT (base, cased), layer 1  | 37.079   | 92.848  |60.648  | 48.907  | 42.508
-|BERT (base, cased), layer 0  | 32.260   | 92.829  |60.103  | 47.495  | 39.947
-|||
-|ELMo (original), layer 2     | 39.315   | 90.576  | 64.171  | 54.410  | 49.183
-|ELMo (original), layer 1     | 38.101   | 91.598  | 64.060  | 54.205  | 48.319
-|ELMo (original), layer 0     | 28.248   | 87.986  | 57.575  | 45.625  | 37.928
-|||
-|ELMo (5.5B), layer 2         | 41.181   | 90.133  | 63.860  | 54.766  | 49.567
-|ELMo (5.5B), layer 1         | 39.341   | 91.131  | 64.244  | 54.818  | 49.621
-|ELMo (5.5B), layer 0         | 29.307   | 91.326  | 59.647  | 47.692  | 40.117
-|||
-|GloVe (840B.300d)            | 28.808   | 90.274  | 60.278 | 47.526  | 39.963
+### Non-Transformer baselines
+
+| Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
+|:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
+|ELMo (original), layer 2     | 90.576  | 64.171  | 54.410  | 49.183  | 39.315   |
+|ELMo (original), layer 1     | 91.598  | 64.060  | 54.205  | 48.319  | 38.101   |
+|ELMo (original), layer 0     | 87.986  | 57.575  | 45.625  | 37.928  | 28.248   |
+|||                                                                   |
+|ELMo (5.5B), layer 2         | 90.133  | 63.860  | 54.766  | 49.567  | 41.181   |
+|ELMo (5.5B), layer 1         | 91.131  | 64.244  | 54.818  | 49.621  | 39.341   |
+|ELMo (5.5B), layer 0         | 91.326  | 59.647  | 47.692  | 40.117  | 29.307   |
+|||                                                                   |
+|GloVe (840B.300d)            | 90.274  | 60.278 | 47.526  | 39.963   | 28.808   |
 *retest
 
-| SST-2
-|:--------:|
-| 74.011
-| 72.173
-| 70.489
-| 70.105
-| 68.477
-| 68.198
-| 67.770
-| 67.084
-| 67.004
-| 66.640
-| 65.755
-| 65.512
-| 56.220
-| 76.557
-| 74.117
-| 58.173
-|||
-| 77.013
-| 75.788
-| 58.255
-|||
-| 57.721
+### BERT (base, cased)
+
+| Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
+|:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
+|BERT (base, cased), layer 12 | 88.325  |62.693  | 53.289  | 48.154   | 41.155   |
+|BERT (base, cased), layer 11 | 88.950  |62.934  | 53.343  | 48.165   | 40.978   |
+|BERT (base, cased), layer 10 | 89.328  |63.123  | 53.653  | 48.272   | 41.256   |
+|BERT (base, cased), layer 9  | 89.760  |63.359  | 53.945  | 48.366   | 40.822   |
+|BERT (base, cased), layer 8  | 90.204  |63.262  | 53.480  | 47.559   | 40.374   |
+|BERT (base, cased), layer 7  | 90.926  |63.109  | 53.107  | 47.160   | 40.207   |
+|BERT (base, cased), layer 6  | 91.314  |62.634  | 52.354  | 46.454   | 39.414   |
+|BERT (base, cased), layer 5  | 91.656  |62.039  | 51.306  | 45.552   | 39.091   |
+|BERT (base, cased), layer 4  | 91.923  |61.808  | 50.758  | 44.917   | 37.911   |
+|BERT (base, cased), layer 3  | 92.157  |61.472  | 50.286  | 44.291   | 38.202   |
+|BERT (base, cased), layer 2  | 92.383  |61.338  | 49.974  | 43.852   | 36.984   |
+|BERT (base, cased), layer 1  | 92.848  |60.648  | 48.907  | 42.508   | 37.079   |
+|BERT (base, cased), layer 0  | 92.829  |60.103  | 47.495  | 39.947   | 32.260   |
+
+### GPT2 (base)
+
+| Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
+|:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
+|GPT2 (base), layer 0         | -       |61.54   | 49.79   | 43.88    | 29.32   |
+|GPT2 (base), layer 1         | -       |61.57   | 50.49   | 46.06    | 31.40   |
+|GPT2 (base), layer 2         | -       |61.63   | 50.63   | 46.70    | 31.59   |
+|GPT2 (base), layer 3         | -       |61.65   | 51.41   | 47.37    | 32.46   |
+|GPT2 (base), layer 4         | -       |61.94   | 52.13   | 48.08    | 32.09   |
+|GPT2 (base), layer 5         | -       |61.99   | 52.65   | 48.62    | 32.55   |
+|GPT2 (base), layer 6         | -       |62.03   | 53.38   | 48.91    | 33.33   |
+|GPT2 (base), layer 7         | -       |62.29   | 52.99   | 48.39    | 33.00   |
+|GPT2 (base), layer 8         | -       |62.07   | 52.75   | 49.29    | 33.99   |
+|GPT2 (base), layer 9         | -       |61.90   | 52.74   | 48.90    | 34.26   |
+|GPT2 (base), layer 10        | -       |61.42   | 51.89   | 48.11    | 33.92   |
+|GPT2 (base), layer 11        | -       |60.55   | 50.45   | 46.74    | 33.16   |
+|GPT2 (base), layer 12        | -       |62.61   | 53.86   | 49.55    | 36.14   |
+
+### XLNet (base)
+
+| Contextualizer               | Leaf    |Parent  | GParent | GGParent | Root     |
+|:-----------------------------|:-------:|--------|:-------:|:--------:|:--------:|
+|XLNet (base), layer 0         | -       |59.45   | 46.28   | 38.31    | 29.02    |
+|XLNet (base), layer 1         | -       |61.23   | 51.44   | 45.91    | 33.07    |
+|XLNet (base), layer 2         | -       |62.35   | 53.96   | 48.67    | 34.30    |
+|XLNet (base), layer 3         | -       |63.73   | 55.34   | 49.93    | 35.08    |
+|XLNet (base), layer 4         | -       |64.62   | 56.54   | 51.65    | 37.66    |
+|XLNet (base), layer 5         | -       |64.34   | 56.93   | 52.13    | 39.78    |
+|XLNet (base), layer 6         | -       |64.92   | 57.44   | 52.77    | 39.71    |
+|XLNet (base), layer 7         | -       |64.98   | 57.60   | 53.03    | 40.87    |
+|XLNet (base), layer 8         | -       |64.96   | 57.79   | 53.49    | 41.27    |
+|XLNet (base), layer 9         | -       |64.66   | 57.05   | 53.26    | 41.17    |
+|XLNet (base), layer 10        | -       |64.26   | 57.01   | 52.52    | 41.22    |
+|XLNet (base), layer 11        | -       |63.68   | 56.54   | 51.54    | 40.48    |
+|XLNet (base), layer 12        | -       |62.67   | 54.74   | 49.95    | 39.59    |
+
+### RoBERTa (base)
+
+| Contextualizer               | Leaf    |Parent  | GParent | GGParent | Root     |
+|:-----------------------------|:-------:|--------|:-------:|:--------:|:--------:|
+|RoBERTa (base), layer 0       | -       |61.65   | 49.96   | 43.78    | 29.43    |
+|RoBERTa (base), layer 1       | -       |62.86   | 52.97   | 48.13    | 34.35    |
+|RoBERTa (base), layer 2       | -       |62.79   | 54.05   | 49.89    | 34.09    |
+|RoBERTa (base), layer 3       | -       |63.79   | 55.87   | 51.53    | 35.08    |
+|RoBERTa (base), layer 4       | -       |64.53   | 56.78   | 52.60    | 36.37    |
+|RoBERTa (base), layer 5       | -       |64.69   | 57.67   | 53.84    | 38.73    |
+|RoBERTa (base), layer 6       | -       |65.18   | 57.88   | 54.28    | 40.56    |
+|RoBERTa (base), layer 7       | -       |64.89   | 58.14   | 54.57    | 40.29    |
+|RoBERTa (base), layer 8       | -       |64.80   | 58.03   | 54.28    | 41.04    |
+|RoBERTa (base), layer 9       | -       |64.49   | 57.72   | 53.85    | 39.54    |
+|RoBERTa (base), layer 10      | -       |64.57   | 57.80   | 53.30    | 39.29    |
+|RoBERTa (base), layer 11      | -       |63.91   | 57.52   | 53.23    | 39.86    |
+|RoBERTa (base), layer 12      | -       |63.91   | 57.08   | 52.91    | 40.07    |
+
+### BERT (large, cased)
+
+| Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
+|:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
+|BERT (large, cased), layer 0 | 88.11   |60.22   | 48.69   | 43.19    | 28.55   |
+|BERT (large, cased), layer 1 | 88.53   |61.23   | 50.91   | 46.30    | 34.45   |
+|BERT (large, cased), layer 2 | 88.39   |61.30   | 51.07   | 46.70    | 34.20   |
+|BERT (large, cased), layer 3 | 88.49   |61.34   | 51.08   | 47.01    | 33.88   |
+|BERT (large, cased), layer 4 | 88.55   |61.88   | 51.95   | 47.55    | 33.08   |
+|BERT (large, cased), layer 5 | 88.52   |62.00   | 52.21   | 47.95    | 33.03   |
+|BERT (large, cased), layer 6 | 88.57   |62.22   | 52.70   | 48.41    | 32.78   |
+|BERT (large, cased), layer 7 | 88.64   |62.75   | 53.04   | 48.44    | 32.73   |
+|BERT (large, cased), layer 8 | 88.68   |62.80   | 53.31   | 48.88    | 33.32   |
+|BERT (large, cased), layer 9 | 88.68   |63.04   | 53.89   | 49.46    | 34.36   |
+|BERT (large, cased), layer 10 |88.68   |63.57   | 54.21   | 49.62    | 34.99   |
+|BERT (large, cased), layer 11 |88.75   |63.69   | 54.57   | 50.47    | 35.79   |
+|BERT (large, cased), layer 12 |88.75   |64.41   | 55.26   | 51.21    | 36.45   |
+|BERT (large, cased), layer 13 |88.58   |64.80   | 55.68   | 51.50    | 36.47   |
+|BERT (large, cased), layer 14 |88.58   |65.12   | 56.65   | 51.45    | 36.59   |
+|BERT (large, cased), layer 15 |88.58   |65.37   | 56.69   | 52.03    | 36.61   |
+|BERT (large, cased), layer 16 |88.27   |65.55   | 57.18   | 52.61    | 37.81   |
+|BERT (large, cased), layer 17 |88.21   |65.75   | 57.87   | 53.23    | 38.45   |
+|BERT (large, cased), layer 18 |87.91   |65.89   | 57.95   | 53.63    | 40.31   |
+|BERT (large, cased), layer 19 |87.72   |65.43   | 57.86   | 53.27    | 40.64   |
+|BERT (large, cased), layer 20 |87.59   |65.38   | 57.80   | 53.35    | 41.65   |
+|BERT (large, cased), layer 21 |87.14   |64.19   | 56.57   | 52.16    | 41.27   |
+|BERT (large, cased), layer 22 |86.87   |64.01   | 55.98   | 51.45    | 40.23   |
+|BERT (large, cased), layer 23 |87.02   |63.55   | 55.63   | 50.96    | 40.01   |
+|BERT (large, cased), layer 24 |86.69   |63.05   | 55.91   | 50.90    | 40.20   |
 
