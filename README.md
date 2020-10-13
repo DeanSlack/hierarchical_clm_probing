@@ -73,6 +73,8 @@ For a sequence of contextualized word representations, each token is tasked with
 |BERT (base, cased), layer 1  | 92.848  |60.648  | 48.907  | 42.508   | 37.079   |
 |BERT (base, cased), layer 0  | 92.829  |60.103  | 47.495  | 39.947   | 32.260   |
 
+![alt-text](https://github.com/DeanSlack/lm_probing/blob/master/figures/bert_base.svg)
+
 ### GPT2 (base)
 
 | Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
@@ -157,3 +159,32 @@ For a sequence of contextualized word representations, each token is tasked with
 |BERT (large, cased), layer 23 |87.02   |63.55   | 55.63   | 50.96    | 40.01   |
 |BERT (large, cased), layer 24 |86.69   |63.05   | 55.91   | 50.90    | 40.20   |
 
+### GPT2 (medium)
+
+| Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
+|:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
+|GPT2 (medium), layer 0  | -  |60.22   | 48.69   | 43.19    | 28.55   |
+|GPT2 (medium), layer 1  | -  |61.23   | 50.91   | 46.30    | 34.45   |
+|GPT2 (medium), layer 2  | -  |61.30   | 51.07   | 46.70    | 34.20   |
+|GPT2 (medium), layer 3  | -  |61.34   | 51.08   | 47.01    | 33.88   |
+|GPT2 (medium), layer 4  | -  |61.88   | 51.95   | 47.55    | 33.08   |
+|GPT2 (medium), layer 5  | -  |62.00   | 52.21   | 47.95    | 33.03   |
+|GPT2 (medium), layer 6  | -  |62.22   | 52.70   | 48.41    | 32.78   |
+|GPT2 (medium), layer 7  | -  |62.75   | 53.04   | 48.44    | 32.73   |
+|GPT2 (medium), layer 8  | -  |62.80   | 53.31   | 48.88    | 33.32   |
+|GPT2 (medium), layer 9  | -  |63.04   | 53.89   | 49.46    | 34.36   |
+|GPT2 (medium), layer 10 | -  |63.57   | 54.21   | 49.62    | 34.99   |
+|GPT2 (medium), layer 11 | -  |63.69   | 54.57   | 50.47    | 35.79   |
+|GPT2 (medium), layer 12 | -  |64.41   | 55.26   | 51.21    | 36.45   |
+|GPT2 (medium), layer 13 | -  |64.80   | 55.68   | 51.50    | 36.47   |
+|GPT2 (medium), layer 14 | -  |65.12   | 56.65   | 51.45    | 36.59   |
+|GPT2 (medium), layer 15 | -  |65.37   | 56.69   | 52.03    | 36.61   |
+|GPT2 (medium), layer 16 | -  |65.55   | 57.18   | 52.61    | 37.81   |
+|GPT2 (medium), layer 17 | -  |65.75   | 57.87   | 53.23    | 38.45   |
+|GPT2 (medium), layer 18 | -  |        |         |          | 40.31   |
+|GPT2 (medium), layer 19 | -  |65.43   | 57.86   | 53.27    | 40.64   |
+|GPT2 (medium), layer 20 | -  |65.38   | 57.80   | 53.35    |         |
+|GPT2 (medium), layer 21 | -  |64.19   | 56.57   | 52.16    | 41.27   |
+|GPT2 (medium), layer 22 | -  |64.01   | 55.98   | 51.45    | 40.23   |
+|GPT2 (medium), layer 23 | -  |63.55   | 55.63   | 50.96    | 40.01   |
+|GPT2 (medium), layer 24 | -  |63.05   | 55.91   | 50.90    | 40.20   |
