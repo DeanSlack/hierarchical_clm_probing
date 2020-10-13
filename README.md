@@ -76,8 +76,8 @@ For a sequence of contextualized word representations, each token is tasked with
 |:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
 |BERT (base, cased), layer 12 | 88.325  |62.693  | 53.289  | 48.154   | 41.155   |
 |BERT (base, cased), layer 11 | 88.950  |62.934  | 53.343  | 48.165   | 40.978   |
-|BERT (base, cased), layer 10 | 89.328  |63.123  | 53.653  | 48.272   | 41.256   |
-|BERT (base, cased), layer 9  | 89.760  |63.359  | 53.945  | 48.366   | 40.822   |
+|BERT (base, cased), layer 10 | 89.328  |63.123  | 53.653  | 48.272   | **41.256** |
+|BERT (base, cased), layer 9  | 89.760  |**63.359**|**53.945**|**48.366**| 40.822   |
 |BERT (base, cased), layer 8  | 90.204  |63.262  | 53.480  | 47.559   | 40.374   |
 |BERT (base, cased), layer 7  | 90.926  |63.109  | 53.107  | 47.160   | 40.207   |
 |BERT (base, cased), layer 6  | 91.314  |62.634  | 52.354  | 46.454   | 39.414   |
@@ -104,7 +104,7 @@ For a sequence of contextualized word representations, each token is tasked with
 |GPT2 (base), layer 9         | -       |61.90   | 52.74   | 48.90    | 34.26   |
 |GPT2 (base), layer 10        | -       |61.42   | 51.89   | 48.11    | 33.92   |
 |GPT2 (base), layer 11        | -       |60.55   | 50.45   | 46.74    | 33.16   |
-|GPT2 (base), layer 12        | -       |62.61   | 53.86   | 49.55    | 36.14   |
+|GPT2 (base), layer 12        | -       |**62.61**|**53.86**|**49.55 **|**36.14 **|
 
 ### XLNet (base)
 
@@ -118,7 +118,7 @@ For a sequence of contextualized word representations, each token is tasked with
 |XLNet (base), layer 5         | -       |64.34   | 56.93   | 52.13    | 39.78    |
 |XLNet (base), layer 6         | -       |64.92   | 57.44   | 52.77    | 39.71    |
 |XLNet (base), layer 7         | -       |64.98   | 57.60   | 53.03    | 40.87    |
-|XLNet (base), layer 8         | -       |64.96   | 57.79   | 53.49    | 41.27    |
+|XLNet (base), layer 8         | -       |**64.96**|**57.79**|**53.49**|**41.27**|
 |XLNet (base), layer 9         | -       |64.66   | 57.05   | 53.26    | 41.17    |
 |XLNet (base), layer 10        | -       |64.26   | 57.01   | 52.52    | 41.22    |
 |XLNet (base), layer 11        | -       |63.68   | 56.54   | 51.54    | 40.48    |
@@ -134,9 +134,9 @@ For a sequence of contextualized word representations, each token is tasked with
 |RoBERTa (base), layer 3       | -       |63.79   | 55.87   | 51.53    | 35.08    |
 |RoBERTa (base), layer 4       | -       |64.53   | 56.78   | 52.60    | 36.37    |
 |RoBERTa (base), layer 5       | -       |64.69   | 57.67   | 53.84    | 38.73    |
-|RoBERTa (base), layer 6       | -       |65.18   | 57.88   | 54.28    | 40.56    |
-|RoBERTa (base), layer 7       | -       |64.89   | 58.14   | 54.57    | 40.29    |
-|RoBERTa (base), layer 8       | -       |64.80   | 58.03   | 54.28    | 41.04    |
+|RoBERTa (base), layer 6       | -       |**65.18**| 57.88   | 54.28    | 40.56    |
+|RoBERTa (base), layer 7       | -       |64.89   |**58.14**|**54.57** | 40.29    |
+|RoBERTa (base), layer 8       | -       |64.80   | 58.03   | 54.28    |**41.04**|
 |RoBERTa (base), layer 9       | -       |64.49   | 57.72   | 53.85    | 39.54    |
 |RoBERTa (base), layer 10      | -       |64.57   | 57.80   | 53.30    | 39.29    |
 |RoBERTa (base), layer 11      | -       |63.91   | 57.52   | 53.23    | 39.86    |
@@ -158,15 +158,15 @@ For a sequence of contextualized word representations, each token is tasked with
 |BERT (large, cased), layer 9 | 88.68   |63.04   | 53.89   | 49.46    | 34.36   |
 |BERT (large, cased), layer 10 |88.68   |63.57   | 54.21   | 49.62    | 34.99   |
 |BERT (large, cased), layer 11 |88.75   |63.69   | 54.57   | 50.47    | 35.79   |
-|BERT (large, cased), layer 12 |88.75   |64.41   | 55.26   | 51.21    | 36.45   |
+|BERT (large, cased), layer 12 |**88.75**|64.41   | 55.26   | 51.21    | 36.45   |
 |BERT (large, cased), layer 13 |88.58   |64.80   | 55.68   | 51.50    | 36.47   |
 |BERT (large, cased), layer 14 |88.58   |65.12   | 56.65   | 51.45    | 36.59   |
 |BERT (large, cased), layer 15 |88.58   |65.37   | 56.69   | 52.03    | 36.61   |
 |BERT (large, cased), layer 16 |88.27   |65.55   | 57.18   | 52.61    | 37.81   |
 |BERT (large, cased), layer 17 |88.21   |65.75   | 57.87   | 53.23    | 38.45   |
-|BERT (large, cased), layer 18 |87.91   |65.89   | 57.95   | 53.63    | 40.31   |
+|BERT (large, cased), layer 18 |87.91   |**65.89**|**57.95**|**53.63**| 40.31   |
 |BERT (large, cased), layer 19 |87.72   |65.43   | 57.86   | 53.27    | 40.64   |
-|BERT (large, cased), layer 20 |87.59   |65.38   | 57.80   | 53.35    | 41.65   |
+|BERT (large, cased), layer 20 |87.59   |65.38   | 57.80   | 53.35    |**41.65**|
 |BERT (large, cased), layer 21 |87.14   |64.19   | 56.57   | 52.16    | 41.27   |
 |BERT (large, cased), layer 22 |86.87   |64.01   | 55.98   | 51.45    | 40.23   |
 |BERT (large, cased), layer 23 |87.02   |63.55   | 55.63   | 50.96    | 40.01   |
