@@ -169,32 +169,35 @@ For a sequence of contextualized word representations, each token is tasked with
 
 ### GPT2 (medium)
 
-| Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
-|:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
-|GPT2 (medium), layer 0  | -  |-        | 61.67  | 49.72   | 44.09    |29.51
-|GPT2 (medium), layer 1  | -  |-        | 61.10  | 49.35   | 43.48    |28.48
-|GPT2 (medium), layer 2  | -  |-        | 61.33  | 49.53   | 44.41    |29.80
-|GPT2 (medium), layer 3  | -  |-        | 61.34  | 50.79   | 46.44    |30.96
-|GPT2 (medium), layer 4  | -  |-        | 60.38  | 51.21   | 46.68    |31.36
-|GPT2 (medium), layer 5  | -  |-        | 61.00  | 51.34   | 47.47    |31.21
-|GPT2 (medium), layer 6  | -  |-        | 60.89  | 51.55   | 47.62    |31.70
-|GPT2 (medium), layer 7  | -  |-        | 61.45  | 51.70   | 47.82    |31.59
-|GPT2 (medium), layer 8  | -  |-        | 61.81  | 51.67   | 47.82    |33.04
-|GPT2 (medium), layer 9  | -  |-        | 61.90  | 51.84   | 48.17    |32.43
-|GPT2 (medium), layer 10 | -  |-        | 61.66  | 52.05   | 48.54    |34.21
-|GPT2 (medium), layer 11 | -  |-        | 61.64  | 52.51   | 47.93    |33.46
-|GPT2 (medium), layer 12 | -  |-        | 60.92  | 51.81   | 48.22    |34.04
-|GPT2 (medium), layer 13 | -  |-        | 60.74  | 52.91   | 48.50    |34.54
-|GPT2 (medium), layer 14 | -  |-        | 60.80  | 52.18   | 47.36    |35.12
-|GPT2 (medium), layer 15 | -  |-        | 61.30  | 51.94   | 48.28    |33.76
-|GPT2 (medium), layer 16 | -  |-        | 60.93  | 51.27   | 46.74    |33.53
-|GPT2 (medium), layer 17 | -  |-        | 59.97  | 50.49   | 46.99    |33.60
-|GPT2 (medium), layer 18 | -  |-        | 58.36  | 50.82   | 47.08    |33.10
-|GPT2 (medium), layer 19 | -  |-        | 59.29  | 49.59   | 46.49    |33.77
-|GPT2 (medium), layer 20 | -  |-        | 59.37  | 50.55   | 47.24    |33.47
-|GPT2 (medium), layer 21 | -  |-        | 60.43  | 50.62   | 45.48    |32.12
-|GPT2 (medium), layer 22 | -  |-        | 58.65  | 49.09   | 44.41    |33.56
-|GPT2 (medium), layer 23 | -  |-        | 59.95  | 50.04   | 44.87    |32.03
-|GPT2 (medium), layer 24 | -  |-        | 62.93  | 54.22   | 49.74    |36.71
+| Contextualizer          | Leaf    |Parent  | GParent | GGParent | Root     |
+|:------------------------|:-------:|--------|:-------:|:--------:|:--------:|
+|GPT2 (medium), layer 0   |-        | 61.67  | 49.72   | 44.09    |29.51
+|GPT2 (medium), layer 1   |-        | 61.10  | 49.35   | 43.48    |28.48
+|GPT2 (medium), layer 2   |-        | 61.33  | 49.53   | 44.41    |29.80
+|GPT2 (medium), layer 3   |-        | 61.34  | 50.79   | 46.44    |30.96
+|GPT2 (medium), layer 4   |-        | 60.38  | 51.21   | 46.68    |31.36
+|GPT2 (medium), layer 5   |-        | 61.00  | 51.34   | 47.47    |31.21
+|GPT2 (medium), layer 6   |-        | 60.89  | 51.55   | 47.62    |31.70
+|GPT2 (medium), layer 7   |-        | 61.45  | 51.70   | 47.82    |31.59
+|GPT2 (medium), layer 8   |-        | 61.81  | 51.67   | 47.82    |33.04
+|GPT2 (medium), layer 9   |-        | 61.90  | 51.84   | 48.17    |32.43
+|GPT2 (medium), layer 10  |-        | 61.66  | 52.05   | 48.54    |34.21
+|GPT2 (medium), layer 11  |-        | 61.64  | 52.51   | 47.93    |33.46
+|GPT2 (medium), layer 12  |-        | 60.92  | 51.81   | 48.22    |34.04
+|GPT2 (medium), layer 13  |-        | 60.74  | 52.91   | 48.50    |34.54
+|GPT2 (medium), layer 14  |-        | 60.80  | 52.18   | 47.36    |35.12
+|GPT2 (medium), layer 15  |-        | 61.30  | 51.94   | 48.28    |33.76
+|GPT2 (medium), layer 16  |-        | 60.93  | 51.27   | 46.74    |33.53
+|GPT2 (medium), layer 17  |-        | 59.97  | 50.49   | 46.99    |33.60
+|GPT2 (medium), layer 18  |-        | 58.36  | 50.82   | 47.08    |33.10
+|GPT2 (medium), layer 19  |-        | 59.29  | 49.59   | 46.49    |33.77
+|GPT2 (medium), layer 20  |-        | 59.37  | 50.55   | 47.24    |33.47
+|GPT2 (medium), layer 21  |-        | 60.43  | 50.62   | 45.48    |32.12
+|GPT2 (medium), layer 22  |-        | 58.65  | 49.09   | 44.41    |33.56
+|GPT2 (medium), layer 23  |-        | 59.95  | 50.04   | 44.87    |32.03
+|GPT2 (medium), layer 24  |-        |**62.93**|**54.22**|**49.74**|**36.71**
+
+![alt-text](https://github.com/DeanSlack/lm_probing/blob/master/figures/gpt2_medium.svg)
+
 
 
