@@ -28,7 +28,7 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 
 ## **Example Results on Ancestor Sentiment Classification**
 
-![alt-text](figures/fig.png){width=200 height=200}
+<img src="figures/fig.png" alt="" width="200"/>
 
 For a sequence of contextualized word representations, each token is tasked with predicting the sentiment classification of it's parent, grandparent, or great-grandparent. For cases where the token doesn't have a grandparent or great-grandparent, the linear model is tasked to predict a "None" classification label. Additionally, we perform sentence-level (root) sentiment analysis using single word representations contextualised on full sentences. We experiment with both fine-grained (5 classes) and binary, using the Stanford Sentiment Treebank (SST).
 
