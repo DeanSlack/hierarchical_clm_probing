@@ -28,7 +28,7 @@ Trained on cased English text: Wikipedia (~2.5B words) + BookCorpus (~800M words
 
 ## **Example Results on Ancestor Sentiment Classification**
 
-<img src="figures/fig.png" alt="" width="400"/>
+<img src="figures/fig.png" alt="" width="500"/>
 
 For a sequence of contextualized word representations, each token is tasked with predicting the sentiment classification of it's parent, grandparent, or great-grandparent. For cases where the token doesn't have a grandparent or great-grandparent, the linear model is tasked to predict a "None" classification label. Additionally, we perform sentence-level (root) sentiment analysis using single word representations contextualised on full sentences. We experiment with both fine-grained (5 classes) and binary, using the Stanford Sentiment Treebank (SST).
 
@@ -50,6 +50,9 @@ For a sequence of contextualized word representations, each token is tasked with
 
 ### BERT (base, cased)
 
+<img src="figures/bert_pos.png" alt="" width="600"/>
+
+
 | Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
 |:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
 |BERT (base, cased), layer 12 | 88.325  |62.693  | 53.289  | 48.154   | 41.155   |
@@ -66,9 +69,11 @@ For a sequence of contextualized word representations, each token is tasked with
 |BERT (base, cased), layer 1  | 92.848  |60.648  | 48.907  | 42.508   | 37.079   |
 |BERT (base, cased), layer 0  | 92.829  |60.103  | 47.495  | 39.947   | 32.260   |
 
-<img src="figures/bert_pos.png" alt="" width="400"/>
 
 ### GPT2 (base)
+
+<img src="figures/gpt_pos.png" alt="" width="600"/>
+
 
 | Contextualizer              | Leaf    |Parent  | GParent | GGParent | Root     |
 |:--------------------------- |:-------:|--------|:-------:|:--------:|:--------:|
@@ -86,4 +91,3 @@ For a sequence of contextualized word representations, each token is tasked with
 |GPT2 (base), layer 11        | -       |60.55   | 50.45   | 46.74    | 33.16   |
 |GPT2 (base), layer 12        | -       |**62.61**|**53.86**|**49.55**|**36.14**|
 
-<img src="figures/gpt_pos.png" alt="" width="400"/>
