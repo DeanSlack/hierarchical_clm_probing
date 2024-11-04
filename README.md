@@ -66,7 +66,7 @@ For a sequence of contextualized word representations, each token is tasked with
 |BERT (base, cased), layer 1  | 92.848  |60.648  | 48.907  | 42.508   | 37.079   |
 |BERT (base, cased), layer 0  | 92.829  |60.103  | 47.495  | 39.947   | 32.260   |
 
-![alt-text](https://github.com/DeanSlack/hierarchical_word_probing/blob/master/figures/pos_bert_large.pdf)
+![alt-text](https://github.com/DeanSlack/hierarchical_word_probing/figures/pos_bert_large.pdf)
 
 ### GPT2 (base)
 
